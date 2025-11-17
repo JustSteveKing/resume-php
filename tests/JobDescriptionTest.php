@@ -13,6 +13,7 @@ final class JobDescriptionTest extends PackageTestCase
     {
         $data = [
             'name' => 'Backend Engineer',
+            'location' => 'San Francisco',
             'description' => 'Developed backend systems.',
             'highlights' => ['Built REST APIs', 'Optimized queries'],
             'skills' => ['PHP', 'MySQL'],
@@ -24,6 +25,7 @@ final class JobDescriptionTest extends PackageTestCase
         $builder = new JobDescriptionBuilder();
         $jobDesc = $builder
             ->name($data['name'])
+            ->location($data['location'])
             ->description($data['description'])
             ->highlights($data['highlights'])
             ->skills($data['skills'])
@@ -62,6 +64,7 @@ final class JobDescriptionTest extends PackageTestCase
 
         $jobDesc = $builder
             ->name('Empty Fields')
+            ->location(null)
             ->description(null)
             ->highlights([])
             ->skills([])

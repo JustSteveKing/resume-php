@@ -19,6 +19,7 @@ final readonly class Work implements JsonSerializable
      *
      * @param string $name The name of the company or organization.
      * @param string $position The position held at the company.
+     * @param string|null $location The location of the company or organization.
      * @param string|null $url The URL of the company or organization.
      * @param string|null $startDate The start date of employment in YYYY-MM-DD format.
      * @param string|null $endDate The end date of employment in YYYY-MM-DD format.
@@ -30,6 +31,8 @@ final readonly class Work implements JsonSerializable
         public string $name,
         #[Field('position')]
         public string $position,
+        #[Field('location')]
+        public ?string $location = null,
         #[Field('url')]
         public ?string $url = null,
         #[Field('startDate')]
@@ -60,6 +63,7 @@ final readonly class Work implements JsonSerializable
      * @return array{
      *     name: string,
      *     position: string,
+     *     location: ?string,
      *     url: ?string,
      *     startDate: ?string,
      *     endDate: ?string,
@@ -71,6 +75,7 @@ final readonly class Work implements JsonSerializable
     {
         return [
             'name' => $this->name,
+            'location' => $this->location,
             'position' => $this->position,
             'url' => $this->url,
             'startDate' => $this->startDate,

@@ -70,6 +70,7 @@ final class ResumeBuilderTest extends PackageTestCase
     {
         $work1 = new Work(
             name: 'Tech Corp',
+            location: 'San Francisco',
             position: 'Senior Developer',
             startDate: '2020-01-01',
             endDate: '2023-12-31',
@@ -77,6 +78,7 @@ final class ResumeBuilderTest extends PackageTestCase
 
         $work2 = new Work(
             name: 'Startup Inc',
+            location: 'Remote',
             position: 'Developer',
             startDate: '2018-01-01',
             endDate: '2019-12-31',
