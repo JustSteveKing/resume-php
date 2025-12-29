@@ -505,16 +505,11 @@
         },
         {
             "name": "phpstan/phpstan",
-            "version": "2.1.18",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/phpstan/phpstan.git",
-                "reference": "ee1f390b7a70cdf74a2b737e554f68afea885db7"
-            },
+            "version": "2.1.33",
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpstan/phpstan/zipball/ee1f390b7a70cdf74a2b737e554f68afea885db7",
-                "reference": "ee1f390b7a70cdf74a2b737e554f68afea885db7",
+                "url": "https://api.github.com/repos/phpstan/phpstan/zipball/9e800e6bee7d5bd02784d4c6069b48032d16224f",
+                "reference": "9e800e6bee7d5bd02784d4c6069b48032d16224f",
                 "shasum": ""
             },
             "require": {
@@ -559,7 +554,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2025-07-17T17:22:31+00:00"
+            "time": "2025-12-05T10:24:31+00:00"
         },
         {
             "name": "phpunit/php-code-coverage",
@@ -1002,21 +997,21 @@
         },
         {
             "name": "rector/rector",
-            "version": "2.1.2",
+            "version": "2.3.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/rectorphp/rector.git",
-                "reference": "40a71441dd73fa150a66102f5ca1364c44fc8fff"
+                "reference": "f7166355dcf47482f27be59169b0825995f51c7d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/rectorphp/rector/zipball/40a71441dd73fa150a66102f5ca1364c44fc8fff",
-                "reference": "40a71441dd73fa150a66102f5ca1364c44fc8fff",
+                "url": "https://api.github.com/repos/rectorphp/rector/zipball/f7166355dcf47482f27be59169b0825995f51c7d",
+                "reference": "f7166355dcf47482f27be59169b0825995f51c7d",
                 "shasum": ""
             },
             "require": {
                 "php": "^7.4|^8.0",
-                "phpstan/phpstan": "^2.1.18"
+                "phpstan/phpstan": "^2.1.33"
             },
             "conflict": {
                 "rector/rector-doctrine": "*",
@@ -1050,7 +1045,7 @@
             ],
             "support": {
                 "issues": "https://github.com/rectorphp/rector/issues",
-                "source": "https://github.com/rectorphp/rector/tree/2.1.2"
+                "source": "https://github.com/rectorphp/rector/tree/2.3.0"
             },
             "funding": [
                 {
@@ -1058,7 +1053,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2025-07-17T19:30:06+00:00"
+            "time": "2025-12-25T22:00:18+00:00"
         },
         {
             "name": "roave/security-advisories",
