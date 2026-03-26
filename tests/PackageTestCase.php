@@ -20,6 +20,8 @@ use JustSteveKing\Resume\DataObjects\Work;
 use JustSteveKing\Resume\Enums\EducationLevel;
 use JustSteveKing\Resume\Enums\Network;
 use JustSteveKing\Resume\Enums\SkillLevel;
+use JustSteveKing\Resume\ValueObjects\Email;
+use JustSteveKing\Resume\ValueObjects\Url;
 use PHPUnit\Framework\TestCase;
 
 abstract class PackageTestCase extends TestCase
@@ -35,15 +37,15 @@ abstract class PackageTestCase extends TestCase
         );
 
         $profiles = [
-            new Profile(Network::GitHub, 'johndoe', 'https://github.com/johndoe'),
-            new Profile(Network::LinkedIn, 'johndoe', 'https://linkedin.com/in/johndoe'),
+            new Profile(Network::GitHub, 'johndoe', new Url('https://github.com/johndoe')),
+            new Profile(Network::LinkedIn, 'johndoe', new Url('https://linkedin.com/in/johndoe')),
         ];
 
         $basics = new Basics(
             name: 'John Doe',
             label: 'Software Engineer',
-            email: 'john@example.com',
-            url: 'https://johndoe.com',
+            email: new Email('john@example.com'),
+            url: new Url('https://johndoe.com'),
             summary: 'Experienced software engineer with 5+ years in web development.',
             location: $location,
             profiles: $profiles,
@@ -93,7 +95,7 @@ abstract class PackageTestCase extends TestCase
                 endDate: '2023-06-01',
                 description: 'Built a full-stack e-commerce platform',
                 highlights: ['Handled 10k+ users', 'Implemented payment gateway'],
-                url: 'https://github.com/johndoe/ecommerce',
+                url: new Url('https://github.com/johndoe/ecommerce'),
             ))
             ->addLanguage(new Language('English', 'Native'))
             ->addLanguage(new Language('Spanish', 'Conversational'))

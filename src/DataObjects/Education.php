@@ -7,17 +7,16 @@ namespace JustSteveKing\Resume\DataObjects;
 use JsonSerializable;
 use JustSteveKing\Resume\Attributes\Field;
 use JustSteveKing\Resume\Concerns\ValidatesDate;
-use JustSteveKing\Resume\Concerns\ValidatesUrl;
 use JustSteveKing\Resume\Enums\EducationLevel;
+use JustSteveKing\Resume\ValueObjects\Url;
 
 final readonly class Education implements JsonSerializable
 {
     use ValidatesDate;
-    use ValidatesUrl;
 
     /**
      * @param string $institution
-     * @param string|null $url
+     * @param Url|null $url
      * @param string|null $area
      * @param EducationLevel|null $studyType
      * @param string|null $startDate
@@ -29,7 +28,7 @@ final readonly class Education implements JsonSerializable
         #[Field('institution')]
         public string $institution,
         #[Field('url')]
-        public ?string $url = null,
+        public ?Url $url = null,
         #[Field('area')]
         public ?string $area = null,
         #[Field('studyType')]
@@ -43,10 +42,6 @@ final readonly class Education implements JsonSerializable
         #[Field('courses')]
         public array $courses = [],
     ) {
-        if (null !== $this->url) {
-            $this->assertUrl($this->url);
-        }
-
         if (null !== $this->startDate) {
             $this->assertDate($this->startDate);
         }
@@ -74,7 +69,7 @@ final readonly class Education implements JsonSerializable
     {
         return [
             'institution' => $this->institution,
-            'url' => $this->url,
+            'url' => $this->url?->jsonSerialize(),
             'area' => $this->area,
             'studyType' => $this->studyType?->value,
             'startDate' => $this->startDate,

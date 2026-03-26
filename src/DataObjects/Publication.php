@@ -7,18 +7,17 @@ namespace JustSteveKing\Resume\DataObjects;
 use JsonSerializable;
 use JustSteveKing\Resume\Attributes\Field;
 use JustSteveKing\Resume\Concerns\ValidatesDate;
-use JustSteveKing\Resume\Concerns\ValidatesUrl;
+use JustSteveKing\Resume\ValueObjects\Url;
 
 final readonly class Publication implements JsonSerializable
 {
     use ValidatesDate;
-    use ValidatesUrl;
 
     /**
      * @param string $name
      * @param string $publisher
      * @param string $releaseDate
-     * @param string|null $url
+     * @param Url|null $url
      * @param string|null $summary
      */
     public function __construct(
@@ -29,15 +28,11 @@ final readonly class Publication implements JsonSerializable
         #[Field('releaseDate')]
         public string $releaseDate,
         #[Field('url')]
-        public ?string $url = null,
+        public ?Url $url = null,
         #[Field('summary')]
         public ?string $summary = null,
     ) {
         $this->assertDate($this->releaseDate);
-
-        if (null !== $this->url) {
-            $this->assertUrl($this->url);
-        }
     }
 
     /**
@@ -57,7 +52,7 @@ final readonly class Publication implements JsonSerializable
             'name' => $this->name,
             'publisher' => $this->publisher,
             'releaseDate' => $this->releaseDate,
-            'url' => $this->url,
+            'url' => $this->url?->jsonSerialize(),
             'summary' => $this->summary,
         ];
     }

@@ -9,6 +9,8 @@ use JustSteveKing\Resume\DataObjects\Basics;
 use JustSteveKing\Resume\DataObjects\Location;
 use JustSteveKing\Resume\DataObjects\Profile;
 use JustSteveKing\Resume\Enums\Network;
+use JustSteveKing\Resume\ValueObjects\Email;
+use JustSteveKing\Resume\ValueObjects\Url;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\PackageTestCase;
@@ -62,15 +64,15 @@ final class BasicsTest extends PackageTestCase
         $profile = new Profile(
             network: Network::GitHub,
             username: 'johndoe',
-            url: 'https://github.com/johndoe',
+            url: new Url('https://github.com/johndoe'),
         );
 
         $basics = new Basics(
             name: 'John Doe',
             label: 'Software Engineer',
-            email: 'john@example.com',
+            email: new Email('john@example.com'),
             phone: '+1-555-123-4567',
-            url: 'https://johndoe.com',
+            url: new Url('https://johndoe.com'),
             summary: 'Experienced software engineer with 5+ years in web development.',
             location: $location,
             profiles: [$profile],
@@ -78,9 +80,9 @@ final class BasicsTest extends PackageTestCase
 
         $this->assertSame('John Doe', $basics->name);
         $this->assertSame('Software Engineer', $basics->label);
-        $this->assertSame('john@example.com', $basics->email);
+        $this->assertSame('john@example.com', $basics->email->value);
         $this->assertSame('+1-555-123-4567', $basics->phone);
-        $this->assertSame('https://johndoe.com', $basics->url);
+        $this->assertSame('https://johndoe.com', $basics->url->value);
         $this->assertSame('Experienced software engineer with 5+ years in web development.', $basics->summary);
         $this->assertSame($location, $basics->location);
         $this->assertSame([$profile], $basics->profiles);
@@ -104,10 +106,10 @@ final class BasicsTest extends PackageTestCase
         $basics = new Basics(
             name: 'John Doe',
             label: 'Software Engineer',
-            email: 'john@example.com',
+            email: new Email('john@example.com'),
         );
 
-        $this->assertSame('john@example.com', $basics->email);
+        $this->assertSame('john@example.com', $basics->email->value);
     }
 
     #[Test]
@@ -116,11 +118,7 @@ final class BasicsTest extends PackageTestCase
     {
         $this->expectException(InvalidArgumentException::class);
 
-        new Basics(
-            name: 'John Doe',
-            label: 'Software Engineer',
-            email: $invalidEmail,
-        );
+        new Email($invalidEmail);
     }
 
     #[Test]
@@ -154,15 +152,15 @@ final class BasicsTest extends PackageTestCase
         $profile = new Profile(
             network: Network::GitHub,
             username: 'johndoe',
-            url: 'https://github.com/johndoe',
+            url: new Url('https://github.com/johndoe'),
         );
 
         $basics = new Basics(
             name: 'John Doe',
             label: 'Software Engineer',
-            email: 'john@example.com',
+            email: new Email('john@example.com'),
             phone: '+1-555-123-4567',
-            url: 'https://johndoe.com',
+            url: new Url('https://johndoe.com'),
             summary: 'Experienced software engineer.',
             location: $location,
             profiles: [$profile],
@@ -200,7 +198,7 @@ final class BasicsTest extends PackageTestCase
         $basics = new Basics(
             name: 'John Doe',
             label: 'Software Engineer',
-            email: 'john@example.com',
+            email: new Email('john@example.com'),
             phone: null,
             url: null,
             summary: null,

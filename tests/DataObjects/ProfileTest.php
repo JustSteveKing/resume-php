@@ -6,6 +6,7 @@ namespace Tests\DataObjects;
 
 use JustSteveKing\Resume\DataObjects\Profile;
 use JustSteveKing\Resume\Enums\Network;
+use JustSteveKing\Resume\ValueObjects\Url;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\PackageTestCase;
@@ -84,12 +85,12 @@ final class ProfileTest extends PackageTestCase
         $profile = new Profile(
             network: Network::LinkedIn,
             username: 'johndoe',
-            url: 'https://linkedin.com/in/johndoe',
+            url: new Url('https://linkedin.com/in/johndoe'),
         );
 
         $this->assertSame(Network::LinkedIn, $profile->network);
         $this->assertSame('johndoe', $profile->username);
-        $this->assertSame('https://linkedin.com/in/johndoe', $profile->url);
+        $this->assertSame('https://linkedin.com/in/johndoe', $profile->url->value);
     }
 
     #[Test]
@@ -128,7 +129,7 @@ final class ProfileTest extends PackageTestCase
         $profile = new Profile(
             network: Network::Twitter,
             username: 'johndoe',
-            url: 'https://twitter.com/johndoe',
+            url: new Url('https://twitter.com/johndoe'),
         );
 
         $expected = [
@@ -163,12 +164,12 @@ final class ProfileTest extends PackageTestCase
         $profile = new Profile(
             network: $network,
             username: $username,
-            url: $url,
+            url: $url ? new Url($url) : null,
         );
 
         $this->assertSame($network, $profile->network);
         $this->assertSame($username, $profile->username);
-        $this->assertSame($url, $profile->url);
+        $this->assertSame($url, $profile->url?->value);
 
         // Test serialization
         $serialized = $profile->jsonSerialize();
@@ -182,8 +183,8 @@ final class ProfileTest extends PackageTestCase
     public function can_be_used_in_arrays(): void
     {
         $profiles = [
-            new Profile(Network::GitHub, 'johndoe', 'https://github.com/johndoe'),
-            new Profile(Network::LinkedIn, 'johndoe', 'https://linkedin.com/in/johndoe'),
+            new Profile(Network::GitHub, 'johndoe', new Url('https://github.com/johndoe')),
+            new Profile(Network::LinkedIn, 'johndoe', new Url('https://linkedin.com/in/johndoe')),
             new Profile(Network::Twitter, 'johndoe'),
         ];
 

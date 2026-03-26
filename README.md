@@ -123,7 +123,7 @@ $resume->addSkill(new Skill(
 ### Complete Example
 
 For a complete example of building a résumé with all available sections, see
-the [example.resume.json](example.resume.json) file or check the integration tests.
+the [example resume](resume/full.json) file or check the integration tests.
 
 ## Features
 

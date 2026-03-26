@@ -9,6 +9,7 @@ use JustSteveKing\Resume\DataObjects\JobDescription;
 final class JobDescriptionBuilder
 {
     private string $name = '';
+    private ?string $location = null;
     private ?string $description = null;
     /** @var list<string> $highlights */
     private array $highlights = [];
@@ -29,6 +30,18 @@ final class JobDescriptionBuilder
     public function name(string $name): JobDescriptionBuilder
     {
         $this->name = $name;
+        return $this;
+    }
+
+    /**
+     * Set the location for the job description.
+     *
+     * @param string|null $location The location of the job.
+     * @return JobDescriptionBuilder
+     */
+    public function location(?string $location): JobDescriptionBuilder
+    {
+        $this->location = $location;
         return $this;
     }
 
@@ -173,6 +186,7 @@ final class JobDescriptionBuilder
     {
         return new JobDescription(
             name: $this->name,
+            location: $this->location,
             description: $this->description,
             highlights: $this->highlights,
             skills: $this->skills,
