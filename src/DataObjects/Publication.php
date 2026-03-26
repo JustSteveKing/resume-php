@@ -4,19 +4,19 @@ declare(strict_types=1);
 
 namespace JustSteveKing\Resume\DataObjects;
 
+use DateTimeImmutable;
 use JsonSerializable;
 use JustSteveKing\Resume\Attributes\Field;
-use JustSteveKing\Resume\Concerns\ValidatesDate;
 use JustSteveKing\Resume\ValueObjects\Url;
 
 final readonly class Publication implements JsonSerializable
 {
-    use ValidatesDate;
+    public DateTimeImmutable $releaseDate;
 
     /**
      * @param string $name
      * @param string $publisher
-     * @param string $releaseDate
+     * @param string|DateTimeImmutable $releaseDate
      * @param Url|null $url
      * @param string|null $summary
      */
@@ -26,13 +26,13 @@ final readonly class Publication implements JsonSerializable
         #[Field('publisher')]
         public string $publisher,
         #[Field('releaseDate')]
-        public string $releaseDate,
+        string|DateTimeImmutable $releaseDate,
         #[Field('url')]
         public ?Url $url = null,
         #[Field('summary')]
         public ?string $summary = null,
     ) {
-        $this->assertDate($this->releaseDate);
+        $this->releaseDate = is_string($releaseDate) ? new DateTimeImmutable($releaseDate) : $releaseDate;
     }
 
     /**
@@ -51,7 +51,7 @@ final readonly class Publication implements JsonSerializable
         return [
             'name' => $this->name,
             'publisher' => $this->publisher,
-            'releaseDate' => $this->releaseDate,
+            'releaseDate' => $this->releaseDate->format('Y-m-d'),
             'url' => $this->url?->jsonSerialize(),
             'summary' => $this->summary,
         ];

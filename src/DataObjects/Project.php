@@ -4,19 +4,20 @@ declare(strict_types=1);
 
 namespace JustSteveKing\Resume\DataObjects;
 
+use DateTimeImmutable;
 use JsonSerializable;
 use JustSteveKing\Resume\Attributes\Field;
-use JustSteveKing\Resume\Concerns\ValidatesDate;
 use JustSteveKing\Resume\ValueObjects\Url;
 
 final readonly class Project implements JsonSerializable
 {
-    use ValidatesDate;
+    public ?DateTimeImmutable $startDate;
+    public ?DateTimeImmutable $endDate;
 
     /**
      * @param string $name
-     * @param string|null $startDate
-     * @param string|null $endDate
+     * @param string|DateTimeImmutable|null $startDate
+     * @param string|DateTimeImmutable|null $endDate
      * @param string|null $description
      * @param list<string> $highlights
      * @param Url|null $url
@@ -25,9 +26,9 @@ final readonly class Project implements JsonSerializable
         #[Field('name')]
         public string $name,
         #[Field('startDate')]
-        public ?string $startDate = null,
+        string|DateTimeImmutable|null $startDate = null,
         #[Field('endDate')]
-        public ?string $endDate = null,
+        string|DateTimeImmutable|null $endDate = null,
         #[Field('description')]
         public ?string $description = null,
         #[Field('highlights')]
@@ -35,13 +36,8 @@ final readonly class Project implements JsonSerializable
         #[Field('url')]
         public ?Url $url = null,
     ) {
-        if (null !== $this->startDate) {
-            $this->assertDate($this->startDate);
-        }
-
-        if (null !== $this->endDate) {
-            $this->assertDate($this->endDate);
-        }
+        $this->startDate = is_string($startDate) ? new DateTimeImmutable($startDate) : $startDate;
+        $this->endDate = is_string($endDate) ? new DateTimeImmutable($endDate) : $endDate;
     }
 
     /**
@@ -60,8 +56,8 @@ final readonly class Project implements JsonSerializable
     {
         return [
             'name' => $this->name,
-            'startDate' => $this->startDate,
-            'endDate' => $this->endDate,
+            'startDate' => $this->startDate?->format('Y-m-d'),
+            'endDate' => $this->endDate?->format('Y-m-d'),
             'description' => $this->description,
             'highlights' => $this->highlights,
             'url' => $this->url?->jsonSerialize(),
