@@ -7,6 +7,8 @@ namespace JustSteveKing\Resume\DataObjects;
 use JsonSerializable;
 use JustSteveKing\Resume\Attributes\Field;
 use JustSteveKing\Resume\Enums\ResumeSchema;
+use JustSteveKing\Resume\Exceptions\ValidationException;
+use JustSteveKing\Resume\Services\Validator;
 
 final readonly class Resume implements JsonSerializable
 {
@@ -110,5 +112,16 @@ final readonly class Resume implements JsonSerializable
             'has_awards' => ! empty($this->awards),
             'has_publications' => ! empty($this->publications),
         ];
+    }
+
+    /**
+     * Validate the résumé against the official JSON schema.
+     *
+     * @return bool
+     * @throws ValidationException
+     */
+    public function validate(): bool
+    {
+        return (new Validator())->validate($this);
     }
 }
