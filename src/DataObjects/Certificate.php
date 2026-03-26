@@ -14,7 +14,7 @@ final readonly class Certificate implements JsonSerializable
 
     /**
      * @param string $name
-     * @param string $date
+     * @param \DateTimeImmutable $date
      * @param string $issuer
      * @param string|null $url
      */
@@ -22,14 +22,12 @@ final readonly class Certificate implements JsonSerializable
         #[Field('name')]
         public string $name,
         #[Field('date')]
-        public string $date,
+        public \DateTimeImmutable $date,
         #[Field('issuer')]
         public string $issuer,
         #[Field('url')]
         public ?string $url = null,
-    ) {
-        $this->assertDate($this->date);
-    }
+    ) {}
 
     /**
      * Convert the Certificate instance to an array for JSON serialization.
@@ -45,7 +43,7 @@ final readonly class Certificate implements JsonSerializable
     {
         return [
             'name' => $this->name,
-            'date' => $this->date,
+            'date' => $this->date->format('Y-m-d'),
             'issuer' => $this->issuer,
             'url' => $this->url,
         ];

@@ -21,8 +21,8 @@ final readonly class Work implements JsonSerializable
      * @param string $position The position held at the company.
      * @param string|null $location The location of the company or organization.
      * @param string|null $url The URL of the company or organization.
-     * @param string|null $startDate The start date of employment in YYYY-MM-DD format.
-     * @param string|null $endDate The end date of employment in YYYY-MM-DD format.
+     * @param \DateTimeImmutable|null $startDate The start date of employment.
+     * @param \DateTimeImmutable|null $endDate The end date of employment.
      * @param string|null $summary A brief summary of the work done.
      * @param list<string> $highlights An array of highlights or achievements during the employment.
      */
@@ -36,22 +36,14 @@ final readonly class Work implements JsonSerializable
         #[Field('url')]
         public ?string $url = null,
         #[Field('startDate')]
-        public ?string $startDate = null,
+        public ?\DateTimeImmutable $startDate = null,
         #[Field('endDate')]
-        public ?string $endDate = null,
+        public ?\DateTimeImmutable $endDate = null,
         #[Field('summary')]
         public ?string $summary = null,
         #[Field('highlights')]
         public array $highlights = [],
     ) {
-        if (null !== $this->startDate) {
-            $this->assertDate($this->startDate);
-        }
-
-        if (null !== $this->endDate) {
-            $this->assertDate($this->endDate);
-        }
-
         if (null !== $this->url) {
             $this->assertUrl($this->url);
         }
@@ -78,8 +70,8 @@ final readonly class Work implements JsonSerializable
             'location' => $this->location,
             'position' => $this->position,
             'url' => $this->url,
-            'startDate' => $this->startDate,
-            'endDate' => $this->endDate,
+            'startDate' => $this->startDate?->format('Y-m-d'),
+            'endDate' => $this->endDate?->format('Y-m-d'),
             'summary' => $this->summary,
             'highlights' => $this->highlights,
         ];

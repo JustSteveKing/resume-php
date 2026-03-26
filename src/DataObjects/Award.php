@@ -14,7 +14,7 @@ final readonly class Award implements JsonSerializable
 
     /**
      * @param string $title
-     * @param string $date
+     * @param \DateTimeImmutable $date
      * @param string $awarder
      * @param string|null $summary
      */
@@ -22,14 +22,12 @@ final readonly class Award implements JsonSerializable
         #[Field('title')]
         public string $title,
         #[Field('date')]
-        public string $date,
+        public \DateTimeImmutable $date,
         #[Field('awarder')]
         public string $awarder,
         #[Field('summary')]
         public ?string $summary = null,
-    ) {
-        $this->assertDate($this->date);
-    }
+    ) {}
 
     /**
      * Convert the Award instance to an array for JSON serialization.
@@ -45,7 +43,7 @@ final readonly class Award implements JsonSerializable
     {
         return [
             'title' => $this->title,
-            'date' => $this->date,
+            'date' => $this->date->format('Y-m-d'),
             'awarder' => $this->awarder,
             'summary' => $this->summary,
         ];

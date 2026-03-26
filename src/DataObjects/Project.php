@@ -16,8 +16,8 @@ final readonly class Project implements JsonSerializable
 
     /**
      * @param string $name
-     * @param string|null $startDate
-     * @param string|null $endDate
+     * @param \DateTimeImmutable|null $startDate
+     * @param \DateTimeImmutable|null $endDate
      * @param string|null $description
      * @param list<string> $highlights
      * @param string|null $url
@@ -26,9 +26,9 @@ final readonly class Project implements JsonSerializable
         #[Field('name')]
         public string $name,
         #[Field('startDate')]
-        public ?string $startDate = null,
+        public ?\DateTimeImmutable $startDate = null,
         #[Field('endDate')]
-        public ?string $endDate = null,
+        public ?\DateTimeImmutable $endDate = null,
         #[Field('description')]
         public ?string $description = null,
         #[Field('highlights')]
@@ -36,14 +36,6 @@ final readonly class Project implements JsonSerializable
         #[Field('url')]
         public ?string $url = null,
     ) {
-        if (null !== $this->startDate) {
-            $this->assertDate($this->startDate);
-        }
-
-        if (null !== $this->endDate) {
-            $this->assertDate($this->endDate);
-        }
-
         if (null !== $this->url) {
             $this->assertUrl($this->url);
         }
@@ -65,8 +57,8 @@ final readonly class Project implements JsonSerializable
     {
         return [
             'name' => $this->name,
-            'startDate' => $this->startDate,
-            'endDate' => $this->endDate,
+            'startDate' => $this->startDate?->format('Y-m-d'),
+            'endDate' => $this->endDate?->format('Y-m-d'),
             'description' => $this->description,
             'highlights' => $this->highlights,
             'url' => $this->url,

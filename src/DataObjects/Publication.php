@@ -17,7 +17,7 @@ final readonly class Publication implements JsonSerializable
     /**
      * @param string $name
      * @param string $publisher
-     * @param string $releaseDate
+     * @param \DateTimeImmutable $releaseDate
      * @param string|null $url
      * @param string|null $summary
      */
@@ -27,14 +27,12 @@ final readonly class Publication implements JsonSerializable
         #[Field('publisher')]
         public string $publisher,
         #[Field('releaseDate')]
-        public string $releaseDate,
+        public \DateTimeImmutable $releaseDate,
         #[Field('url')]
         public ?string $url = null,
         #[Field('summary')]
         public ?string $summary = null,
     ) {
-        $this->assertDate($this->releaseDate);
-
         if (null !== $this->url) {
             $this->assertUrl($this->url);
         }
@@ -56,7 +54,7 @@ final readonly class Publication implements JsonSerializable
         return [
             'name' => $this->name,
             'publisher' => $this->publisher,
-            'releaseDate' => $this->releaseDate,
+            'releaseDate' => $this->releaseDate->format('Y-m-d'),
             'url' => $this->url,
             'summary' => $this->summary,
         ];

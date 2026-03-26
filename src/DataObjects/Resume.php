@@ -204,8 +204,10 @@ final readonly class Resume implements JsonSerializable
         if ($options['work'] && ! empty($this->work)) {
             $md[] = "\n## 💼 Work Experience";
             foreach ($this->work as $job) {
+                $startDate = $job->startDate?->format('Y-m') ?? 'Present';
+                $endDate = $job->endDate?->format('Y-m') ?? 'Present';
                 $md[] = "### {$job->position} at {$job->name}";
-                $md[] = "_{$job->startDate} → {$job->endDate}_";
+                $md[] = "_{$startDate} → {$endDate}_";
                 if ( ! empty($job->summary)) {
                     $md[] = $job->summary;
                 }
@@ -220,8 +222,10 @@ final readonly class Resume implements JsonSerializable
         if ($options['education'] && ! empty($this->education)) {
             $md[] = "\n## 🎓 Education";
             foreach ($this->education as $edu) {
+                $startDate = $edu->startDate?->format('Y-m') ?? 'Present';
+                $endDate = $edu->endDate?->format('Y-m') ?? 'Present';
                 $md[] = "### {$edu->institution}";
-                $md[] = "_{$edu->startDate} → {$edu->endDate}_";
+                $md[] = "_{$startDate} → {$endDate}_";
                 $md[] = "{$edu->area} in {$edu->studyType?->value}";
                 $md[] = '';
             }

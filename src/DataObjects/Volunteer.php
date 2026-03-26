@@ -18,8 +18,8 @@ final readonly class Volunteer implements JsonSerializable
      * @param string $organization
      * @param string $position
      * @param string|null $url
-     * @param string|null $startDate
-     * @param string|null $endDate
+     * @param \DateTimeImmutable|null $startDate
+     * @param \DateTimeImmutable|null $endDate
      * @param string|null $summary
      * @param list<string> $highlights
      */
@@ -31,22 +31,14 @@ final readonly class Volunteer implements JsonSerializable
         #[Field('url')]
         public ?string $url = null,
         #[Field('startDate')]
-        public ?string $startDate = null,
+        public ?\DateTimeImmutable $startDate = null,
         #[Field('endDate')]
-        public ?string $endDate = null,
+        public ?\DateTimeImmutable $endDate = null,
         #[Field('summary')]
         public ?string $summary = null,
         #[Field('highlights')]
         public array $highlights = [],
     ) {
-        if (null !== $this->startDate) {
-            $this->assertDate($this->startDate);
-        }
-
-        if (null !== $this->endDate) {
-            $this->assertDate($this->endDate);
-        }
-
         if (null !== $this->url) {
             $this->assertUrl($this->url);
         }
@@ -71,8 +63,8 @@ final readonly class Volunteer implements JsonSerializable
             'organization' => $this->organization,
             'position' => $this->position,
             'url' => $this->url,
-            'startDate' => $this->startDate,
-            'endDate' => $this->endDate,
+            'startDate' => $this->startDate?->format('Y-m-d'),
+            'endDate' => $this->endDate?->format('Y-m-d'),
             'summary' => $this->summary,
             'highlights' => $this->highlights,
         ];
