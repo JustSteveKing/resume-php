@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace JustSteveKing\Resume\DataObjects;
 
+use DateTimeImmutable;
 use JsonSerializable;
 use JustSteveKing\Resume\Attributes\Field;
 use JustSteveKing\Resume\Concerns\ValidatesDate;
@@ -12,9 +13,11 @@ final readonly class Certificate implements JsonSerializable
 {
     use ValidatesDate;
 
+    public DateTimeImmutable $date;
+
     /**
      * @param string $name
-     * @param string $date
+     * @param string|DateTimeImmutable $date
      * @param string $issuer
      * @param string|null $url
      */
@@ -22,13 +25,13 @@ final readonly class Certificate implements JsonSerializable
         #[Field('name')]
         public string $name,
         #[Field('date')]
-        public string $date,
+        string|DateTimeImmutable $date,
         #[Field('issuer')]
         public string $issuer,
         #[Field('url')]
         public ?string $url = null,
     ) {
-        $this->assertDate($this->date);
+        $this->date = is_string($date) ? new DateTimeImmutable($date) : $date;
     }
 
     /**
@@ -45,7 +48,7 @@ final readonly class Certificate implements JsonSerializable
     {
         return [
             'name' => $this->name,
-            'date' => $this->date,
+            'date' => $this->date->format('Y-m-d'),
             'issuer' => $this->issuer,
             'url' => $this->url,
         ];
