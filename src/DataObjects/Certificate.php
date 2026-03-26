@@ -7,13 +7,10 @@ namespace JustSteveKing\Resume\DataObjects;
 use DateTimeImmutable;
 use JsonSerializable;
 use JustSteveKing\Resume\Attributes\Field;
-use JustSteveKing\Resume\Concerns\ValidatesDate;
 use JustSteveKing\Resume\ValueObjects\Url;
 
 final readonly class Certificate implements JsonSerializable
 {
-    use ValidatesDate;
-
     public DateTimeImmutable $date;
 
     /**

@@ -7,12 +7,9 @@ namespace JustSteveKing\Resume\DataObjects;
 use DateTimeImmutable;
 use JsonSerializable;
 use JustSteveKing\Resume\Attributes\Field;
-use JustSteveKing\Resume\Concerns\ValidatesDate;
 
 final readonly class Award implements JsonSerializable
 {
-    use ValidatesDate;
-
     public DateTimeImmutable $date;
 
     /**

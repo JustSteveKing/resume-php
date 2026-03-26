@@ -20,9 +20,15 @@ final readonly class Work implements JsonSerializable
      * @param string $name The name of the company or organization.
      * @param string $position The position held at the company.
      * @param string|null $location The location of the company or organization.
+<<<<<<< HEAD
      * @param Url|null $url The URL of the company or organization.
      * @param string|DateTimeImmutable|null $startDate The start date of employment.
      * @param string|DateTimeImmutable|null $endDate The end date of employment.
+=======
+     * @param string|null $url The URL of the company or organization.
+     * @param \DateTimeImmutable|null $startDate The start date of employment.
+     * @param \DateTimeImmutable|null $endDate The end date of employment.
+>>>>>>> feature/typed-dates
      * @param string|null $summary A brief summary of the work done.
      * @param list<string> $highlights An array of highlights or achievements during the employment.
      */
@@ -36,16 +42,28 @@ final readonly class Work implements JsonSerializable
         #[Field('url')]
         public ?Url $url = null,
         #[Field('startDate')]
+<<<<<<< HEAD
         string|DateTimeImmutable|null $startDate = null,
         #[Field('endDate')]
         string|DateTimeImmutable|null $endDate = null,
+=======
+        public ?\DateTimeImmutable $startDate = null,
+        #[Field('endDate')]
+        public ?\DateTimeImmutable $endDate = null,
+>>>>>>> feature/typed-dates
         #[Field('summary')]
         public ?string $summary = null,
         #[Field('highlights')]
         public array $highlights = [],
     ) {
+<<<<<<< HEAD
         $this->startDate = is_string($startDate) ? new DateTimeImmutable($startDate) : $startDate;
         $this->endDate = is_string($endDate) ? new DateTimeImmutable($endDate) : $endDate;
+=======
+        if (null !== $this->url) {
+            $this->assertUrl($this->url);
+        }
+>>>>>>> feature/typed-dates
     }
 
     /**
@@ -68,7 +86,11 @@ final readonly class Work implements JsonSerializable
             'name' => $this->name,
             'location' => $this->location,
             'position' => $this->position,
+<<<<<<< HEAD
             'url' => $this->url?->jsonSerialize(),
+=======
+            'url' => $this->url,
+>>>>>>> feature/typed-dates
             'startDate' => $this->startDate?->format('Y-m-d'),
             'endDate' => $this->endDate?->format('Y-m-d'),
             'summary' => $this->summary,

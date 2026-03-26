@@ -20,8 +20,13 @@ final readonly class Education implements JsonSerializable
      * @param Url|null $url
      * @param string|null $area
      * @param EducationLevel|null $studyType
+<<<<<<< HEAD
      * @param string|DateTimeImmutable|null $startDate
      * @param string|DateTimeImmutable|null $endDate
+=======
+     * @param \DateTimeImmutable|null $startDate
+     * @param \DateTimeImmutable|null $endDate
+>>>>>>> feature/typed-dates
      * @param string|null $score
      * @param list<string> $courses
      */
@@ -35,16 +40,28 @@ final readonly class Education implements JsonSerializable
         #[Field('studyType')]
         public ?EducationLevel $studyType = null,
         #[Field('startDate')]
+<<<<<<< HEAD
         string|DateTimeImmutable|null $startDate = null,
         #[Field('endDate')]
         string|DateTimeImmutable|null $endDate = null,
+=======
+        public ?\DateTimeImmutable $startDate = null,
+        #[Field('endDate')]
+        public ?\DateTimeImmutable $endDate = null,
+>>>>>>> feature/typed-dates
         #[Field('score')]
         public ?string $score = null,
         #[Field('courses')]
         public array $courses = [],
     ) {
+<<<<<<< HEAD
         $this->startDate = is_string($startDate) ? new DateTimeImmutable($startDate) : $startDate;
         $this->endDate = is_string($endDate) ? new DateTimeImmutable($endDate) : $endDate;
+=======
+        if (null !== $this->url) {
+            $this->assertUrl($this->url);
+        }
+>>>>>>> feature/typed-dates
     }
 
     /**

@@ -16,8 +16,13 @@ final readonly class Project implements JsonSerializable
 
     /**
      * @param string $name
+<<<<<<< HEAD
      * @param string|DateTimeImmutable|null $startDate
      * @param string|DateTimeImmutable|null $endDate
+=======
+     * @param \DateTimeImmutable|null $startDate
+     * @param \DateTimeImmutable|null $endDate
+>>>>>>> feature/typed-dates
      * @param string|null $description
      * @param list<string> $highlights
      * @param Url|null $url
@@ -26,9 +31,15 @@ final readonly class Project implements JsonSerializable
         #[Field('name')]
         public string $name,
         #[Field('startDate')]
+<<<<<<< HEAD
         string|DateTimeImmutable|null $startDate = null,
         #[Field('endDate')]
         string|DateTimeImmutable|null $endDate = null,
+=======
+        public ?\DateTimeImmutable $startDate = null,
+        #[Field('endDate')]
+        public ?\DateTimeImmutable $endDate = null,
+>>>>>>> feature/typed-dates
         #[Field('description')]
         public ?string $description = null,
         #[Field('highlights')]
@@ -36,8 +47,14 @@ final readonly class Project implements JsonSerializable
         #[Field('url')]
         public ?Url $url = null,
     ) {
+<<<<<<< HEAD
         $this->startDate = is_string($startDate) ? new DateTimeImmutable($startDate) : $startDate;
         $this->endDate = is_string($endDate) ? new DateTimeImmutable($endDate) : $endDate;
+=======
+        if (null !== $this->url) {
+            $this->assertUrl($this->url);
+        }
+>>>>>>> feature/typed-dates
     }
 
     /**
