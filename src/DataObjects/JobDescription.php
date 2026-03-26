@@ -13,6 +13,7 @@ final class JobDescription implements JsonSerializable
      * Create a new JobDescription instance.
      *
      * @param string $name The name of the job description.
+     * @param string|null $location The location of the job.
      * @param string|null $description A brief description of the job.
      * @param list<string> $highlights Key highlights of the job.
      * @param list<string> $skills Required skills for the job.
@@ -23,6 +24,8 @@ final class JobDescription implements JsonSerializable
     public function __construct(
         #[Field('name')]
         public string $name,
+        #[Field('location')]
+        public ?string $location = null,
         #[Field('description')]
         public ?string $description = null,
         #[Field('highlights')]
@@ -42,6 +45,7 @@ final class JobDescription implements JsonSerializable
      *
      * @return array{
      *     name: string,
+     *     location?: string|null,
      *     description?: string|null,
      *     highlights: list<string>,
      *     skills: list<string>,
@@ -54,6 +58,7 @@ final class JobDescription implements JsonSerializable
     {
         return [
             'name' => $this->name,
+            'location' => $this->location,
             'description' => $this->description,
             'highlights' => $this->highlights,
             'skills' => $this->skills,

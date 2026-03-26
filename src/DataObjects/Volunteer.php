@@ -7,17 +7,16 @@ namespace JustSteveKing\Resume\DataObjects;
 use JsonSerializable;
 use JustSteveKing\Resume\Attributes\Field;
 use JustSteveKing\Resume\Concerns\ValidatesDate;
-use JustSteveKing\Resume\Concerns\ValidatesUrl;
+use JustSteveKing\Resume\ValueObjects\Url;
 
 final readonly class Volunteer implements JsonSerializable
 {
     use ValidatesDate;
-    use ValidatesUrl;
 
     /**
      * @param string $organization
      * @param string $position
-     * @param string|null $url
+     * @param Url|null $url
      * @param string|null $startDate
      * @param string|null $endDate
      * @param string|null $summary
@@ -29,7 +28,7 @@ final readonly class Volunteer implements JsonSerializable
         #[Field('position')]
         public string $position,
         #[Field('url')]
-        public ?string $url = null,
+        public ?Url $url = null,
         #[Field('startDate')]
         public ?string $startDate = null,
         #[Field('endDate')]
@@ -45,10 +44,6 @@ final readonly class Volunteer implements JsonSerializable
 
         if (null !== $this->endDate) {
             $this->assertDate($this->endDate);
-        }
-
-        if (null !== $this->url) {
-            $this->assertUrl($this->url);
         }
     }
 
@@ -70,7 +65,7 @@ final readonly class Volunteer implements JsonSerializable
         return [
             'organization' => $this->organization,
             'position' => $this->position,
-            'url' => $this->url,
+            'url' => $this->url?->jsonSerialize(),
             'startDate' => $this->startDate,
             'endDate' => $this->endDate,
             'summary' => $this->summary,

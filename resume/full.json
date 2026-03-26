@@ -1,5 +1,5 @@
 {
-  "$schema": "https://jsonresume.org/schema/schema.json",
+  "$schema": "https://raw.githubusercontent.com/jsonresume/resume-schema/refs/heads/master/schema.json",
   "basics": {
     "name": "Spock",
     "label": "Science Officer & First Officer",

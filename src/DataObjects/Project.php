@@ -7,12 +7,11 @@ namespace JustSteveKing\Resume\DataObjects;
 use JsonSerializable;
 use JustSteveKing\Resume\Attributes\Field;
 use JustSteveKing\Resume\Concerns\ValidatesDate;
-use JustSteveKing\Resume\Concerns\ValidatesUrl;
+use JustSteveKing\Resume\ValueObjects\Url;
 
 final readonly class Project implements JsonSerializable
 {
     use ValidatesDate;
-    use ValidatesUrl;
 
     /**
      * @param string $name
@@ -20,7 +19,7 @@ final readonly class Project implements JsonSerializable
      * @param string|null $endDate
      * @param string|null $description
      * @param list<string> $highlights
-     * @param string|null $url
+     * @param Url|null $url
      */
     public function __construct(
         #[Field('name')]
@@ -34,7 +33,7 @@ final readonly class Project implements JsonSerializable
         #[Field('highlights')]
         public array $highlights = [],
         #[Field('url')]
-        public ?string $url = null,
+        public ?Url $url = null,
     ) {
         if (null !== $this->startDate) {
             $this->assertDate($this->startDate);
@@ -42,10 +41,6 @@ final readonly class Project implements JsonSerializable
 
         if (null !== $this->endDate) {
             $this->assertDate($this->endDate);
-        }
-
-        if (null !== $this->url) {
-            $this->assertUrl($this->url);
         }
     }
 
@@ -69,7 +64,7 @@ final readonly class Project implements JsonSerializable
             'endDate' => $this->endDate,
             'description' => $this->description,
             'highlights' => $this->highlights,
-            'url' => $this->url,
+            'url' => $this->url?->jsonSerialize(),
         ];
     }
 }

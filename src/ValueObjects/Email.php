@@ -2,31 +2,33 @@
 
 declare(strict_types=1);
 
-namespace JustSteveKing\Resume\Concerns;
+namespace JustSteveKing\Resume\ValueObjects;
 
 use InvalidArgumentException;
+use JsonSerializable;
+use Stringable;
 
-trait ValidatesEmail
+final readonly class Email implements JsonSerializable, Stringable
 {
-    protected function assertEmail(?string $email): void
-    {
-        if (null === $email) {
-            return; // null emails are allowed
-        }
-
-        if ('' === mb_trim($email)) {
+    /**
+     * @param string $value
+     */
+    public function __construct(
+        public string $value,
+    ) {
+        if ('' === mb_trim($value)) {
             throw new InvalidArgumentException('Email cannot be empty');
         }
 
         // Additional validation for common issues
-        if (mb_strlen($email) > 254) {
+        if (mb_strlen($value) > 254) {
             throw new InvalidArgumentException('Email address is too long (max 254 characters)');
         }
 
         // Check for valid domain
-        $parts = explode('@', $email);
+        $parts = explode('@', $value);
         if (2 !== count($parts)) {
-            throw new InvalidArgumentException("Invalid email format: {$email}");
+            throw new InvalidArgumentException("Invalid email format: {$value}");
         }
 
         [, $domain] = $parts;
@@ -35,8 +37,8 @@ trait ValidatesEmail
         }
 
         // Final check with filter_var
-        if ( ! filter_var($email, FILTER_VALIDATE_EMAIL)) {
-            throw new InvalidArgumentException("Invalid email format: {$email}");
+        if ( ! filter_var($value, FILTER_VALIDATE_EMAIL)) {
+            throw new InvalidArgumentException("Invalid email format: {$value}");
         }
     }
 
@@ -54,5 +56,20 @@ trait ValidatesEmail
 
         // Check for valid characters
         return 1 === preg_match('/^[a-zA-Z0-9.-]+$/', $domain);
+    }
+
+    public static function fromString(string $value): self
+    {
+        return new self($value);
+    }
+
+    public function __toString(): string
+    {
+        return $this->value;
+    }
+
+    public function jsonSerialize(): string
+    {
+        return $this->value;
     }
 }

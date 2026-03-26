@@ -7,6 +7,7 @@ namespace JustSteveKing\Resume\DataObjects;
 use JsonSerializable;
 use JustSteveKing\Resume\Attributes\Field;
 use JustSteveKing\Resume\Concerns\ValidatesDate;
+use JustSteveKing\Resume\ValueObjects\Url;
 
 final readonly class Certificate implements JsonSerializable
 {
@@ -16,7 +17,7 @@ final readonly class Certificate implements JsonSerializable
      * @param string $name
      * @param string $date
      * @param string $issuer
-     * @param string|null $url
+     * @param Url|null $url
      */
     public function __construct(
         #[Field('name')]
@@ -26,7 +27,7 @@ final readonly class Certificate implements JsonSerializable
         #[Field('issuer')]
         public string $issuer,
         #[Field('url')]
-        public ?string $url = null,
+        public ?Url $url = null,
     ) {
         $this->assertDate($this->date);
     }
@@ -47,7 +48,7 @@ final readonly class Certificate implements JsonSerializable
             'name' => $this->name,
             'date' => $this->date,
             'issuer' => $this->issuer,
-            'url' => $this->url,
+            'url' => $this->url?->jsonSerialize(),
         ];
     }
 }

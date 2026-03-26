@@ -7,12 +7,11 @@ namespace JustSteveKing\Resume\DataObjects;
 use JsonSerializable;
 use JustSteveKing\Resume\Attributes\Field;
 use JustSteveKing\Resume\Concerns\ValidatesDate;
-use JustSteveKing\Resume\Concerns\ValidatesUrl;
+use JustSteveKing\Resume\ValueObjects\Url;
 
 final readonly class Work implements JsonSerializable
 {
     use ValidatesDate;
-    use ValidatesUrl;
 
     /**
      * Create a new Work instance.
@@ -20,7 +19,7 @@ final readonly class Work implements JsonSerializable
      * @param string $name The name of the company or organization.
      * @param string $position The position held at the company.
      * @param string|null $location The location of the company or organization.
-     * @param string|null $url The URL of the company or organization.
+     * @param Url|null $url The URL of the company or organization.
      * @param string|null $startDate The start date of employment in YYYY-MM-DD format.
      * @param string|null $endDate The end date of employment in YYYY-MM-DD format.
      * @param string|null $summary A brief summary of the work done.
@@ -34,7 +33,7 @@ final readonly class Work implements JsonSerializable
         #[Field('location')]
         public ?string $location = null,
         #[Field('url')]
-        public ?string $url = null,
+        public ?Url $url = null,
         #[Field('startDate')]
         public ?string $startDate = null,
         #[Field('endDate')]
@@ -50,10 +49,6 @@ final readonly class Work implements JsonSerializable
 
         if (null !== $this->endDate) {
             $this->assertDate($this->endDate);
-        }
-
-        if (null !== $this->url) {
-            $this->assertUrl($this->url);
         }
     }
 
@@ -77,7 +72,7 @@ final readonly class Work implements JsonSerializable
             'name' => $this->name,
             'location' => $this->location,
             'position' => $this->position,
-            'url' => $this->url,
+            'url' => $this->url?->jsonSerialize(),
             'startDate' => $this->startDate,
             'endDate' => $this->endDate,
             'summary' => $this->summary,
