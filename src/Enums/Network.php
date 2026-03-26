@@ -41,4 +41,5 @@ enum Network: string
     case Line = 'line';
     case Viber = 'viber';
     case Skype = 'skype';
+    case StarfleetDatabase = 'Starfleet Database';
 }
