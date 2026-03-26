@@ -113,8 +113,6 @@ final readonly class Resume implements JsonSerializable
     }
 
     /**
-     * Transform the résumé into a structured array for JSON-LD.
-     *
      * @return array<string, mixed>
      */
     public function toJsonLd(): array
@@ -134,6 +132,17 @@ final readonly class Resume implements JsonSerializable
                 $this->skills,
             ),
         ];
+    }
+
+    /**
+     * Validate the résumé against the official JSON schema.
+     *
+     * @return bool
+     * @throws \JustSteveKing\Resume\Exceptions\ValidationException
+     */
+    public function validate(): bool
+    {
+        return (new \JustSteveKing\Resume\Services\Validator())->validate($this);
     }
 
     /**
