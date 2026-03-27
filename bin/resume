@@ -1,0 +1,23 @@
+#!/usr/bin/env php
+<?php
+
+declare(strict_types=1);
+
+if (file_exists(__DIR__ . '/../vendor/autoload.php')) {
+    require __DIR__ . '/../vendor/autoload.php';
+} else {
+    require __DIR__ . '/../../../autoload.php';
+}
+
+use JustSteveKing\Resume\Commands\ExportCommand;
+use JustSteveKing\Resume\Commands\ValidateCommand;
+use Symfony\Component\Console\Application;
+
+$application = new Application('Resume PHP CLI', '1.0.0');
+
+$application->addCommands([
+    new ValidateCommand(),
+    new ExportCommand(),
+]);
+
+$application->run();

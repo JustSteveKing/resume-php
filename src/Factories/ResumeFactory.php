@@ -27,10 +27,22 @@ use JustSteveKing\Resume\Enums\SkillLevel;
 use JustSteveKing\Resume\Exceptions\HydrationException;
 use JustSteveKing\Resume\ValueObjects\Email;
 use JustSteveKing\Resume\ValueObjects\Url;
+use Symfony\Component\Yaml\Yaml;
 use Throwable;
 
 final class ResumeFactory
 {
+    public static function fromYaml(string $yaml): Resume
+    {
+        try {
+            /** @var array<string, mixed> $data */
+            $data = Yaml::parse($yaml);
+            return self::fromArray($data);
+        } catch (Throwable $e) {
+            throw new HydrationException("Invalid YAML provided: {$e->getMessage()}", $e);
+        }
+    }
+
     public static function fromJson(string $json): Resume
     {
         try {
@@ -84,17 +96,17 @@ final class ResumeFactory
 
             return new Resume(
                 basics: $basics,
-                work: array_map(fn(array $item): Work => self::hydrateWork($item), $work),
-                volunteer: array_map(fn(array $item): Volunteer => self::hydrateVolunteer($item), $volunteer),
-                education: array_map(fn(array $item): Education => self::hydrateEducation($item), $education),
-                awards: array_map(fn(array $item): Award => self::hydrateAward($item), $awards),
-                certificates: array_map(fn(array $item): Certificate => self::hydrateCertificate($item), $certificates),
-                publications: array_map(fn(array $item): Publication => self::hydratePublication($item), $publications),
-                skills: array_map(fn(array $item): Skill => self::hydrateSkill($item), $skills),
-                languages: array_map(fn(array $item): Language => self::hydrateLanguage($item), $languages),
-                interests: array_map(fn(array $item): Interest => self::hydrateInterest($item), $interests),
-                references: array_map(fn(array $item): Reference => self::hydrateReference($item), $references),
-                projects: array_map(fn(array $item): Project => self::hydrateProject($item), $projects),
+                work: array_values(array_map(fn(array $item): Work => self::hydrateWork($item), $work)),
+                volunteer: array_values(array_map(fn(array $item): Volunteer => self::hydrateVolunteer($item), $volunteer)),
+                education: array_values(array_map(fn(array $item): Education => self::hydrateEducation($item), $education)),
+                awards: array_values(array_map(fn(array $item): Award => self::hydrateAward($item), $awards)),
+                certificates: array_values(array_map(fn(array $item): Certificate => self::hydrateCertificate($item), $certificates)),
+                publications: array_values(array_map(fn(array $item): Publication => self::hydratePublication($item), $publications)),
+                skills: array_values(array_map(fn(array $item): Skill => self::hydrateSkill($item), $skills)),
+                languages: array_values(array_map(fn(array $item): Language => self::hydrateLanguage($item), $languages)),
+                interests: array_values(array_map(fn(array $item): Interest => self::hydrateInterest($item), $interests)),
+                references: array_values(array_map(fn(array $item): Reference => self::hydrateReference($item), $references)),
+                projects: array_values(array_map(fn(array $item): Project => self::hydrateProject($item), $projects)),
                 schema: ResumeSchema::tryFrom($schemaValue) ?? ResumeSchema::V1,
             );
         } catch (Throwable $e) {

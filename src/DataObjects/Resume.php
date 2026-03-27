@@ -8,53 +8,64 @@ use JsonSerializable;
 use JustSteveKing\Resume\Attributes\Field;
 use JustSteveKing\Resume\Enums\ResumeSchema;
 use JustSteveKing\Resume\Exceptions\ValidationException;
+use JustSteveKing\Resume\Services\CareerAnalyzer;
 use JustSteveKing\Resume\Services\Validator;
 
 final readonly class Resume implements JsonSerializable
 {
     /**
-     * @param ResumeSchema $schema
      * @param Basics $basics
-     * @param array<Work> $work
-     * @param array<Volunteer> $volunteer
-     * @param array<Education> $education
-     * @param array<Award> $awards
-     * @param array<Certificate> $certificates
-     * @param array<Publication> $publications
-     * @param array<Skill> $skills
-     * @param array<Language> $languages
-     * @param array<Interest> $interests
-     * @param array<Reference> $references
-     * @param array<Project> $projects
+     * @param list<Work> $work
+     * @param list<Volunteer> $volunteer
+     * @param list<Education> $education
+     * @param list<Award> $awards
+     * @param list<Certificate> $certificates
+     * @param list<Publication> $publications
+     * @param list<Skill> $skills
+     * @param list<Language> $languages
+     * @param list<Interest> $interests
+     * @param list<Reference> $references
+     * @param list<Project> $projects
+     * @param ResumeSchema $schema
      */
     public function __construct(
         #[Field('basics')]
-        public Basics       $basics,
+        public Basics $basics,
         #[Field('work')]
-        public array        $work = [],
+        public array $work = [],
         #[Field('volunteer')]
-        public array        $volunteer = [],
+        public array $volunteer = [],
         #[Field('education')]
-        public array        $education = [],
+        public array $education = [],
         #[Field('awards')]
-        public array        $awards = [],
+        public array $awards = [],
         #[Field('certificates')]
-        public array        $certificates = [],
+        public array $certificates = [],
         #[Field('publications')]
-        public array        $publications = [],
+        public array $publications = [],
         #[Field('skills')]
-        public array        $skills = [],
+        public array $skills = [],
         #[Field('languages')]
-        public array        $languages = [],
+        public array $languages = [],
         #[Field('interests')]
-        public array        $interests = [],
+        public array $interests = [],
         #[Field('references')]
-        public array        $references = [],
+        public array $references = [],
         #[Field('projects')]
-        public array        $projects = [],
+        public array $projects = [],
         #[Field('$schema')]
         public ResumeSchema $schema = ResumeSchema::V1,
     ) {}
+
+    /**
+     * Get career insights for the résumé.
+     *
+     * @return CareerAnalyzer
+     */
+    public function getInsights(): CareerAnalyzer
+    {
+        return new CareerAnalyzer($this);
+    }
 
     /**
      * @return non-empty-array<string, mixed>

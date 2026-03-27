@@ -10,9 +10,17 @@
     "library"
   ],
   "homepage": "https://github.com/juststeveking/resume-php",
+  "bin": [
+    "bin/resume"
+  ],
   "require": {
     "php": "^8.4",
-    "opis/json-schema": "^2.6"
+    "opis/json-schema": "^2.6",
+    "symfony/yaml": "^8.0",
+    "symfony/translation": "^8.0",
+    "symfony/config": "^8.0",
+    "symfony/console": "^8.0",
+    "symfony/filesystem": "^8.0"
   },
   "require-dev": {
     "phpunit/phpunit": "^12.1",

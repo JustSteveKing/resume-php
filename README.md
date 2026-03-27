@@ -83,13 +83,16 @@ $json = json_encode($resume, JSON_PRETTY_PRINT);
 
 ### Hydrating from Existing Data
 
-You can easily load an existing JSON résumé or array using the `ResumeFactory`.
+You can easily load an existing JSON or YAML résumé using the `ResumeFactory`.
 
 ```php
 use JustSteveKing\Resume\Factories\ResumeFactory;
 
 // From a JSON string
 $resume = ResumeFactory::fromJson($jsonString);
+
+// From a YAML string
+$resume = ResumeFactory::fromYaml($yamlString);
 
 // From an associative array
 $resume = ResumeFactory::fromArray($data);
@@ -128,8 +131,11 @@ $resume = $resumeBuilder->build();
 - **Value Objects**: Uses `Email` and `Url` value objects to enforce data quality at the point of creation.
 - **Fluent Builder**: A developer-friendly interface for constructing complex resumes step-by-step.
 - **Schema Validation**: Built-in validation using `opis/json-schema` against the official JSON Resume specification.
+- **Career Insights**: Analyze your career data to calculate total experience, skill frequency, and identify work history gaps.
 - **Smart Serialization**: Automatically filters out `null` or empty optional fields to keep your JSON output clean.
-- **Exporters**: Built-in support for transforming resumes to Markdown and JSON-LD (Schema.org).
+- **CLI Tooling**: A built-in command-line tool for validation and conversion.
+- **Internationalization (i18n)**: Support for localized labels in exports (e.g., English, Welsh).
+- **Exporters**: Built-in support for transforming resumes to Markdown, YAML, and JSON-LD (Schema.org).
 
 ## Exporting & Transformations
 
@@ -147,19 +153,47 @@ echo json_encode($jsonLd, JSON_PRETTY_PRINT);
 Generate a clean, human-readable Markdown version of your resume.
 
 ```php
-// Basic export
+// Basic export (defaults to English)
 echo $resume->toMarkdown();
 
-// Custom configuration (enable/disable sections)
-$markdown = $resume->toMarkdown([
-    'basics' => true,
-    'contact' => true,
-    'profiles' => true,
-    'work' => true,
-    'education' => true,
-    'skills' => true,
-    'languages' => true,
-]);
+// Custom configuration and Localization
+$markdown = $resume->toMarkdown(
+    options: [
+        'work' => true,
+        'education' => true,
+    ],
+    locale: 'cy' // Welsh
+);
+```
+
+### Career Insights
+
+The `CareerAnalyzer` service provides deep insights into your résumé data.
+
+```php
+$insights = $resume->getInsights();
+
+// Calculate total years of experience
+echo $insights->getTotalYearsExperience(); // e.g., 8.5
+
+// Identify gaps in work history (greater than 30 days)
+$gaps = $insights->getWorkGaps();
+
+// Get skill usage frequency based on mentions in work highlights
+$skills = $insights->getSkillFrequency();
+```
+
+## CLI Tooling
+
+The library includes a `resume` binary for common tasks.
+
+```bash
+# Validate a résumé file
+./vendor/bin/resume validate my-resume.json
+
+# Export to different formats
+./vendor/bin/resume export my-resume.yaml --format=markdown --locale=en
+./vendor/bin/resume export my-resume.json --format=json-ld --output=profile.jsonld
 ```
 
 ## Job Description Builder
