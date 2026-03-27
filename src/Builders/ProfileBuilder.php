@@ -6,12 +6,13 @@ namespace JustSteveKing\Resume\Builders;
 
 use JustSteveKing\Resume\DataObjects\Profile;
 use JustSteveKing\Resume\Enums\Network;
+use JustSteveKing\Resume\ValueObjects\Url;
 
 final class ProfileBuilder
 {
     private Network $network;
-    private string $username;
-    private ?string $url = null;
+    private string $username = '';
+    private string|Url|null $url = null;
 
     public function __construct(private readonly BasicsBuilder $parent) {}
 
@@ -27,7 +28,7 @@ final class ProfileBuilder
         return $this;
     }
 
-    public function url(string $url): self
+    public function url(string|Url|null $url): self
     {
         $this->url = $url;
         return $this;
@@ -43,7 +44,7 @@ final class ProfileBuilder
         return new Profile(
             network: $this->network,
             username: $this->username,
-            url: $this->url,
+            url: is_string($this->url) ? new Url($this->url) : $this->url,
         );
     }
 }

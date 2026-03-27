@@ -20,13 +20,8 @@ final readonly class Education implements JsonSerializable
      * @param Url|null $url
      * @param string|null $area
      * @param EducationLevel|null $studyType
-<<<<<<< HEAD
      * @param string|DateTimeImmutable|null $startDate
      * @param string|DateTimeImmutable|null $endDate
-=======
-     * @param \DateTimeImmutable|null $startDate
-     * @param \DateTimeImmutable|null $endDate
->>>>>>> feature/typed-dates
      * @param string|null $score
      * @param list<string> $courses
      */
@@ -40,28 +35,16 @@ final readonly class Education implements JsonSerializable
         #[Field('studyType')]
         public ?EducationLevel $studyType = null,
         #[Field('startDate')]
-<<<<<<< HEAD
         string|DateTimeImmutable|null $startDate = null,
         #[Field('endDate')]
         string|DateTimeImmutable|null $endDate = null,
-=======
-        public ?\DateTimeImmutable $startDate = null,
-        #[Field('endDate')]
-        public ?\DateTimeImmutable $endDate = null,
->>>>>>> feature/typed-dates
         #[Field('score')]
         public ?string $score = null,
         #[Field('courses')]
         public array $courses = [],
     ) {
-<<<<<<< HEAD
         $this->startDate = is_string($startDate) ? new DateTimeImmutable($startDate) : $startDate;
         $this->endDate = is_string($endDate) ? new DateTimeImmutable($endDate) : $endDate;
-=======
-        if (null !== $this->url) {
-            $this->assertUrl($this->url);
-        }
->>>>>>> feature/typed-dates
     }
 
     /**
@@ -69,26 +52,43 @@ final readonly class Education implements JsonSerializable
      *
      * @return array{
      *     institution: string,
-     *     url?: string|null,
-     *     area?: string|null,
-     *     studyType?: string|null,
-     *     startDate?: string|null,
-     *     endDate?: string|null,
-     *     score?: string|null,
-     *     courses: list<string>
+     *     url?: string,
+     *     area?: string,
+     *     studyType?: string,
+     *     startDate?: string,
+     *     endDate?: string,
+     *     score?: string,
+     *     courses?: list<string>
      * }
      */
     public function jsonSerialize(): array
     {
-        return [
+        $data = [
             'institution' => $this->institution,
-            'url' => $this->url?->jsonSerialize(),
-            'area' => $this->area,
-            'studyType' => $this->studyType?->value,
-            'startDate' => $this->startDate?->format('Y-m-d'),
-            'endDate' => $this->endDate?->format('Y-m-d'),
-            'score' => $this->score,
-            'courses' => $this->courses,
         ];
+
+        if (null !== $this->url) {
+            $data['url'] = $this->url->jsonSerialize();
+        }
+        if (null !== $this->area) {
+            $data['area'] = $this->area;
+        }
+        if (null !== $this->studyType) {
+            $data['studyType'] = $this->studyType->value;
+        }
+        if (null !== $this->startDate) {
+            $data['startDate'] = $this->startDate->format('Y-m-d');
+        }
+        if (null !== $this->endDate) {
+            $data['endDate'] = $this->endDate->format('Y-m-d');
+        }
+        if (null !== $this->score) {
+            $data['score'] = $this->score;
+        }
+        if ( ! empty($this->courses)) {
+            $data['courses'] = $this->courses;
+        }
+
+        return $data;
     }
 }

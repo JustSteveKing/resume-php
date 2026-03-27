@@ -27,14 +27,19 @@ final readonly class Interest implements JsonSerializable
      *
      * @return array{
      *     name: string,
-     *     keywords: list<string>,
+     *     keywords?: list<string>,
      * }
      */
     public function jsonSerialize(): array
     {
-        return [
+        $data = [
             'name' => $this->name,
-            'keywords' => $this->keywords,
         ];
+
+        if ( ! empty($this->keywords)) {
+            $data['keywords'] = $this->keywords;
+        }
+
+        return $data;
     }
 }

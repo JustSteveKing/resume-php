@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Tests;
 
+use DateTimeImmutable;
 use JustSteveKing\Resume\Builders\ResumeBuilder;
 use JustSteveKing\Resume\DataObjects\Award;
 use JustSteveKing\Resume\DataObjects\Basics;
@@ -56,23 +57,23 @@ abstract class PackageTestCase extends TestCase
             ->addWork(new Work(
                 name: 'Tech Corp',
                 position: 'Senior Developer',
-                startDate: '2020-01-01',
-                endDate: '2023-12-31',
+                startDate: new DateTimeImmutable('2020-01-01'),
+                endDate: new DateTimeImmutable('2023-12-31'),
                 summary: 'Led development of core platform features',
                 highlights: ['Improved performance by 40%', 'Mentored junior developers'],
             ))
             ->addWork(new Work(
                 name: 'Startup Inc',
                 position: 'Full Stack Developer',
-                startDate: '2018-01-01',
-                endDate: '2019-12-31',
+                startDate: new DateTimeImmutable('2018-01-01'),
+                endDate: new DateTimeImmutable('2019-12-31'),
             ))
             ->addEducation(new Education(
                 institution: 'University of Technology',
                 area: 'Computer Science',
                 studyType: EducationLevel::Bachelor,
-                startDate: '2014-09-01',
-                endDate: '2018-06-01',
+                startDate: new DateTimeImmutable('2014-09-01'),
+                endDate: new DateTimeImmutable('2018-06-01'),
             ))
             ->addSkill(new Skill(
                 name: 'PHP',
@@ -91,8 +92,8 @@ abstract class PackageTestCase extends TestCase
             ))
             ->addProject(new Project(
                 name: 'E-commerce Platform',
-                startDate: '2023-01-01',
-                endDate: '2023-06-01',
+                startDate: new DateTimeImmutable('2023-01-01'),
+                endDate: new DateTimeImmutable('2023-06-01'),
                 description: 'Built a full-stack e-commerce platform',
                 highlights: ['Handled 10k+ users', 'Implemented payment gateway'],
                 url: new Url('https://github.com/johndoe/ecommerce'),
@@ -102,18 +103,18 @@ abstract class PackageTestCase extends TestCase
             ->addVolunteer(new Volunteer(
                 organization: 'Local Food Bank',
                 position: 'Web Developer',
-                startDate: '2019-01-01',
-                endDate: '2020-01-01',
+                startDate: new DateTimeImmutable('2019-01-01'),
+                endDate: new DateTimeImmutable('2020-01-01'),
             ))
             ->addAward(new Award(
                 title: 'Employee of the Year',
-                date: '2022-12-01',
+                date: new DateTimeImmutable('2022-12-01'),
                 awarder: 'Tech Corp',
             ))
             ->addPublication(new Publication(
                 name: 'Modern PHP Development',
                 publisher: 'Tech Journal',
-                releaseDate: '2023-03-01',
+                releaseDate: new DateTimeImmutable('2023-03-01'),
             ))
             ->build();
     }

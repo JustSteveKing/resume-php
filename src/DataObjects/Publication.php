@@ -16,13 +16,8 @@ final readonly class Publication implements JsonSerializable
     /**
      * @param string $name
      * @param string $publisher
-<<<<<<< HEAD
      * @param string|DateTimeImmutable $releaseDate
      * @param Url|null $url
-=======
-     * @param \DateTimeImmutable $releaseDate
-     * @param string|null $url
->>>>>>> feature/typed-dates
      * @param string|null $summary
      */
     public function __construct(
@@ -31,23 +26,13 @@ final readonly class Publication implements JsonSerializable
         #[Field('publisher')]
         public string $publisher,
         #[Field('releaseDate')]
-<<<<<<< HEAD
         string|DateTimeImmutable $releaseDate,
-=======
-        public \DateTimeImmutable $releaseDate,
->>>>>>> feature/typed-dates
         #[Field('url')]
         public ?Url $url = null,
         #[Field('summary')]
         public ?string $summary = null,
     ) {
-<<<<<<< HEAD
         $this->releaseDate = is_string($releaseDate) ? new DateTimeImmutable($releaseDate) : $releaseDate;
-=======
-        if (null !== $this->url) {
-            $this->assertUrl($this->url);
-        }
->>>>>>> feature/typed-dates
     }
 
     /**
@@ -57,22 +42,25 @@ final readonly class Publication implements JsonSerializable
      *     name: string,
      *     publisher: string,
      *     releaseDate: string,
-     *     url?: string|null,
-     *     summary?: string|null
+     *     url?: string,
+     *     summary?: string
      * }
      */
     public function jsonSerialize(): array
     {
-        return [
+        $data = [
             'name' => $this->name,
             'publisher' => $this->publisher,
             'releaseDate' => $this->releaseDate->format('Y-m-d'),
-<<<<<<< HEAD
-            'url' => $this->url?->jsonSerialize(),
-=======
-            'url' => $this->url,
->>>>>>> feature/typed-dates
-            'summary' => $this->summary,
         ];
+
+        if (null !== $this->url) {
+            $data['url'] = $this->url->jsonSerialize();
+        }
+        if (null !== $this->summary) {
+            $data['summary'] = $this->summary;
+        }
+
+        return $data;
     }
 }

@@ -35,9 +35,10 @@ final class MarkdownExporter implements Exporter
      * Export the résumé to Markdown format.
      *
      * @param Resume $resume
+     * @param array<string, bool>|null $options
      * @return string
      */
-    public function export(Resume $resume): string
+    public function export(Resume $resume, ?array $options = null): string
     {
         $options = array_replace_recursive([
             'basics' => true,
@@ -47,7 +48,7 @@ final class MarkdownExporter implements Exporter
             'education' => true,
             'skills' => true,
             'languages' => true,
-        ], $this->options);
+        ], $options ?? $this->options);
 
         $md = [];
 
@@ -63,8 +64,8 @@ final class MarkdownExporter implements Exporter
 
         // Contact Info
         if ($options['contact']) {
-            $md[] = "📧 Email: [{$resume->basics->email}](mailto:{$resume->basics->email})";
-            $md[] = "🌍 Website: [{$resume->basics->url}]({$resume->basics->url})";
+            $md[] = "📧 Email: [{$resume->basics->email?->value}](mailto:{$resume->basics->email?->value})";
+            $md[] = "🌍 Website: [{$resume->basics->url?->value}]({$resume->basics->url?->value})";
             if ( ! empty($resume->basics->location)) {
                 $location = "{$resume->basics->location->city}, {$resume->basics->location->countryCode}";
                 $md[] = "📍 Location: {$location}";
@@ -75,7 +76,7 @@ final class MarkdownExporter implements Exporter
         if ($options['profiles'] && ! empty($resume->basics->profiles)) {
             $md[] = "\n### 🔗 Social Profiles";
             foreach ($resume->basics->profiles as $profile) {
-                $md[] = "- [{$profile->network->value}]({$profile->url})";
+                $md[] = "- [{$profile->network->value}]({$profile->url?->value})";
             }
         }
 
@@ -83,8 +84,10 @@ final class MarkdownExporter implements Exporter
         if ($options['work'] && ! empty($resume->work)) {
             $md[] = "\n## 💼 Work Experience";
             foreach ($resume->work as $job) {
+                $startDate = $job->startDate?->format('Y-m') ?? 'Present';
+                $endDate = $job->endDate?->format('Y-m') ?? 'Present';
                 $md[] = "### {$job->position} at {$job->name}";
-                $md[] = "_{$job->startDate} → {$job->endDate}_";
+                $md[] = "_{$startDate} → {$endDate}_";
                 if ( ! empty($job->summary)) {
                     $md[] = $job->summary;
                 }
@@ -99,8 +102,10 @@ final class MarkdownExporter implements Exporter
         if ($options['education'] && ! empty($resume->education)) {
             $md[] = "\n## 🎓 Education";
             foreach ($resume->education as $edu) {
+                $startDate = $edu->startDate?->format('Y-m') ?? 'Present';
+                $endDate = $edu->endDate?->format('Y-m') ?? 'Present';
                 $md[] = "### {$edu->institution}";
-                $md[] = "_{$edu->startDate} → {$edu->endDate}_";
+                $md[] = "_{$startDate} → {$endDate}_";
                 $md[] = "{$edu->area} in {$edu->studyType?->value}";
                 $md[] = '';
             }

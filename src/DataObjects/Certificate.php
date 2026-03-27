@@ -39,16 +39,21 @@ final readonly class Certificate implements JsonSerializable
      *     name: string,
      *     date: string,
      *     issuer: string,
-     *     url?: string|null
+     *     url?: string
      * }
      */
     public function jsonSerialize(): array
     {
-        return [
+        $data = [
             'name' => $this->name,
             'date' => $this->date->format('Y-m-d'),
             'issuer' => $this->issuer,
-            'url' => $this->url?->jsonSerialize(),
         ];
+
+        if (null !== $this->url) {
+            $data['url'] = $this->url->jsonSerialize();
+        }
+
+        return $data;
     }
 }

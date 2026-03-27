@@ -14,7 +14,7 @@ final readonly class Basics implements JsonSerializable
     /**
      * @param string $name
      * @param string $label
-     * @param string|null $image
+     * @param Url|null $image
      * @param Email|null $email
      * @param string|null $phone
      * @param Url|null $url
@@ -28,7 +28,7 @@ final readonly class Basics implements JsonSerializable
         #[Field('label')]
         public string $label,
         #[Field('image')]
-        public ?string $image = null,
+        public ?Url $image = null,
         #[Field('email')]
         public ?Email $email = null,
         #[Field('phone')]
@@ -49,12 +49,12 @@ final readonly class Basics implements JsonSerializable
      * @return array{
      *     name: string,
      *     label: string,
-     *     image?: string|null,
-     *     email?: string|null,
-     *     phone?: string|null,
-     *     url?: string|null,
-     *     summary?: string|null,
-     *     location?: array<string, mixed>|null,
+     *     image?: string,
+     *     email?: string,
+     *     phone?: string,
+     *     url?: string,
+     *     summary?: string,
+     *     location?: array<string, mixed>,
      *     profiles: list<array<string, mixed>>
      * }
      */
@@ -65,6 +65,9 @@ final readonly class Basics implements JsonSerializable
             'label' => $this->label,
         ];
 
+        if (null !== $this->image) {
+            $data['image'] = $this->image->jsonSerialize();
+        }
         if (null !== $this->email) {
             $data['email'] = $this->email->jsonSerialize();
         }

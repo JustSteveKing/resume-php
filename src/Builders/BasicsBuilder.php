@@ -7,15 +7,17 @@ namespace JustSteveKing\Resume\Builders;
 use JustSteveKing\Resume\DataObjects\Basics;
 use JustSteveKing\Resume\DataObjects\Location;
 use JustSteveKing\Resume\DataObjects\Profile;
+use JustSteveKing\Resume\ValueObjects\Email;
+use JustSteveKing\Resume\ValueObjects\Url;
 
 final class BasicsBuilder
 {
-    private string $name;
-    private string $label;
-    private ?string $image = null;
-    private ?string $email = null;
+    private string $name = '';
+    private string $label = '';
+    private string|Url|null $image = null;
+    private string|Email|null $email = null;
     private ?string $phone = null;
-    private ?string $url = null;
+    private string|Url|null $url = null;
     private ?string $summary = null;
     private ?LocationBuilder $locationBuilder = null;
     /** @var list<ProfileBuilder> $profileBuilders */
@@ -35,25 +37,25 @@ final class BasicsBuilder
         return $this;
     }
 
-    public function image(string $image): self
+    public function image(string|Url|null $image): self
     {
         $this->image = $image;
         return $this;
     }
 
-    public function email(string $email): self
+    public function email(string|Email|null $email): self
     {
         $this->email = $email;
         return $this;
     }
 
-    public function phone(string $phone): self
+    public function phone(?string $phone): self
     {
         $this->phone = $phone;
         return $this;
     }
 
-    public function url(string $url): self
+    public function url(string|Url|null $url): self
     {
         $this->url = $url;
         return $this;
@@ -88,10 +90,10 @@ final class BasicsBuilder
         return new Basics(
             name: $this->name,
             label: $this->label,
-            image: $this->image,
-            email: $this->email,
+            image: is_string($this->image) ? new Url($this->image) : $this->image,
+            email: is_string($this->email) ? new Email($this->email) : $this->email,
             phone: $this->phone,
-            url: $this->url,
+            url: is_string($this->url) ? new Url($this->url) : $this->url,
             summary: $this->summary,
             location: $this->locationBuilder?->build(),
             profiles: array_map(

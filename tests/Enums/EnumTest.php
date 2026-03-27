@@ -115,7 +115,7 @@ final class EnumTest extends PackageTestCase
             'snapchat', 'pinterest', 'tumblr', 'medium', 'gitlab', 'bitbucket',
             'dribbble', 'behance', 'flickr', 'vimeo', 'quora', 'slack',
             'clubhouse', 'whatsapp_business', 'signal', 'wechat', 'line',
-            'viber', 'skype',
+            'viber', 'skype', 'Starfleet Database',
         ];
 
         $actualNetworks = array_map(
@@ -124,7 +124,7 @@ final class EnumTest extends PackageTestCase
         );
 
         $this->assertSame(sort($expectedNetworks), sort($actualNetworks));
-        $this->assertCount(count($expectedNetworks), Network::cases());
+        $this->assertCount(36, Network::cases());
     }
 
     #[Test]

@@ -57,7 +57,7 @@ final readonly class Resume implements JsonSerializable
     ) {}
 
     /**
-     * @return non-empty-array<'$schema'|'basics'|'work'|'volunteer'|'education'|'awards'|'certificates'|'publications'|'skills'|'languages'|'interests'|'references'|'projects', mixed>
+     * @return non-empty-array<string, mixed>
      */
     public function jsonSerialize(): array
     {

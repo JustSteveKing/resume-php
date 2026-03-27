@@ -7,56 +7,49 @@ namespace JustSteveKing\Resume\Services;
 use JustSteveKing\Resume\DataObjects\Resume;
 use JustSteveKing\Resume\Exceptions\ValidationException;
 use Opis\JsonSchema\Validator as JsonValidator;
-use Opis\JsonSchema\Errors\ErrorFormatter;
 
-final readonly class Validator
+final class Validator
 {
     private JsonValidator $validator;
+    private string $schemaPath;
 
-    public function __construct(
-        null|JsonValidator $validator = null,
-    ) {
-        $this->validator = $validator ?? new JsonValidator();
+    public function __construct(?string $schemaPath = null)
+    {
+        $this->validator = new JsonValidator();
+        $this->schemaPath = $schemaPath ?? __DIR__ . '/../../resources/schema.json';
     }
 
     /**
+     * Validate the résumé against the JSON schema.
+     *
      * @param Resume $resume
      * @return bool
      * @throws ValidationException
      */
     public function validate(Resume $resume): bool
     {
-        // Encode and decode to get standard object for validator
-        $data = json_decode(
-            json: json_encode($resume) ?: '{}',
-            associative: false,
-        );
-
-        $schemaPath = dirname(__DIR__, 2) . '/resources/schema.json';
-
-        if (! file_exists($schemaPath)) {
-            throw new ValidationException(
-                message: "Schema file not found at [{$schemaPath}].",
-            );
+        $encoded = json_encode($resume);
+        if (false === $encoded) {
+             throw new ValidationException("Failed to encode resume to JSON");
         }
+        $data = json_decode($encoded, false);
+        
+        $schemaContent = file_get_contents($this->schemaPath);
+        if (false === $schemaContent) {
+            throw new ValidationException("Failed to read schema file at {$this->schemaPath}");
+        }
+        $schema = json_decode($schemaContent, false);
 
-        $schema = file_get_contents($schemaPath) ?: '{}';
-
+        /** @var object|bool|string $schema */
         $result = $this->validator->validate($data, $schema);
 
-        if ($result->isValid()) {
-            return true;
+        if ( ! $result->isValid()) {
+            $error = $result->error();
+            $path = implode('->', $error?->data()->fullPath() ?? []);
+            $message = "Resume validation failed at {$path}: " . ($error?->keyword() ?? 'unknown');
+            throw new ValidationException($message);
         }
 
-        $error = $result->error();
-        $formatter = new ErrorFormatter();
-
-        // Get the formatted errors
-        $errors = $formatter->format($error);
-
-        throw new ValidationException(
-            message: 'Resume validation failed.',
-            errors: (array) $errors,
-        );
+        return true;
     }
 }

@@ -31,15 +31,20 @@ final readonly class Profile implements JsonSerializable
      * @return array{
      *     network: string,
      *     username: string,
-     *     url?: string|null
+     *     url?: string
      * }
      */
     public function jsonSerialize(): array
     {
-        return [
+        $data = [
             'network' => $this->network->value,
             'username' => $this->username,
-            'url' => $this->url?->jsonSerialize(),
         ];
+
+        if (null !== $this->url) {
+            $data['url'] = $this->url->jsonSerialize();
+        }
+
+        return $data;
     }
 }

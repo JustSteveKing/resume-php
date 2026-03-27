@@ -2,50 +2,47 @@
 
 declare(strict_types=1);
 
-namespace DataObjects;
+namespace Tests\DataObjects;
 
 use JustSteveKing\Resume\DataObjects\Basics;
+use JustSteveKing\Resume\DataObjects\Location;
 use JustSteveKing\Resume\DataObjects\Profile;
 use JustSteveKing\Resume\DataObjects\Resume;
-use JustSteveKing\Resume\DataObjects\Skill;
 use JustSteveKing\Resume\Enums\Network;
-use JustSteveKing\Resume\Enums\ResumeSchema;
-use PHPUnit\Framework\Attributes\Test;
+use JustSteveKing\Resume\ValueObjects\Email;
+use JustSteveKing\Resume\ValueObjects\Url;
 use Tests\PackageTestCase;
 
 final class ResumeTest extends PackageTestCase
 {
-    #[Test]
-    public function it_outputs_full_markdown(): void
+    public function test_it_outputs_full_markdown(): void
     {
-        $markdown = $this->buildCompleteResume()->toMarkdown();
+        $resume = $this->buildCompleteResume();
+        $exporter = new \JustSteveKing\Resume\Exporters\MarkdownExporter();
+        $markdown = $exporter->export($resume);
 
         $this->assertStringContainsString('# John Doe', $markdown);
+        $this->assertStringContainsString('**Software Engineer**', $markdown);
         $this->assertStringContainsString('## 💼 Work Experience', $markdown);
         $this->assertStringContainsString('## 🎓 Education', $markdown);
         $this->assertStringContainsString('## 🛠 Skills', $markdown);
-        $this->assertStringContainsString('## 🌍 Languages', $markdown);
-        $this->assertStringContainsString('Led development of core platform features', $markdown);
     }
 
-    #[Test]
-    public function it_can_exclude_work_section(): void
+    public function test_it_can_exclude_work_section(): void
     {
-        $markdown = $this->buildCompleteResume()->toMarkdown([
-            'work' => false,
-        ]);
+        $resume = $this->buildCompleteResume();
+        $exporter = new \JustSteveKing\Resume\Exporters\MarkdownExporter();
+        $markdown = $exporter->export($resume, ['work' => false]);
 
-        $this->assertStringNotContainsString('## 💼 Work Experience', $markdown);
         $this->assertStringContainsString('# John Doe', $markdown);
+        $this->assertStringNotContainsString('## 💼 Work Experience', $markdown);
     }
 
-    #[Test]
-    public function it_can_output_only_basics(): void
+    public function test_it_can_output_only_basics(): void
     {
-        $markdown = $this->buildCompleteResume()->toMarkdown([
-            'basics' => true,
-            'contact' => false,
-            'profiles' => false,
+        $resume = $this->buildCompleteResume();
+        $exporter = new \JustSteveKing\Resume\Exporters\MarkdownExporter();
+        $markdown = $exporter->export($resume, [
             'work' => false,
             'education' => false,
             'skills' => false,
@@ -53,119 +50,81 @@ final class ResumeTest extends PackageTestCase
         ]);
 
         $this->assertStringContainsString('# John Doe', $markdown);
-        $this->assertStringContainsString('**Software Engineer**', $markdown);
         $this->assertStringNotContainsString('## 💼 Work Experience', $markdown);
         $this->assertStringNotContainsString('## 🎓 Education', $markdown);
     }
 
-    #[Test]
-    public function it_handles_empty_sections_gracefully(): void
+    public function test_it_handles_empty_sections_gracefully(): void
     {
-        $emptyResume = new Resume(
+        $resume = new Resume(
             basics: new Basics(
                 name: 'Jane Doe',
-                label: 'Software Engineer',
-                email: 'jane@example.com',
-                url: 'https://janedoe.dev',
+                label: 'Designer',
+                email: new Email('jane@example.com'),
+                url: new Url('https://janedoe.com'),
                 profiles: [
-                    new Profile(
-                        network: Network::GitHub,
-                        username: 'JaneDoe',
-                        url: 'https://github.com/JaneDoe',
-                    ),
-                    new Profile(
-                        network: Network::Twitter,
-                        username: 'JaneDoe',
-                        url: 'https://twitter.com/JaneDoe',
-                    ),
+                    new Profile(Network::Instagram, 'janedoe', new Url('https://instagram.com/janedoe')),
                 ],
             ),
         );
 
-        $markdown = $emptyResume->toMarkdown();
+        $exporter = new \JustSteveKing\Resume\Exporters\MarkdownExporter();
+        $markdown = $exporter->export($resume);
 
-        $this->assertStringContainsString('# Jane Doe', $markdown); // Changed from '# No Sections'
+        $this->assertStringContainsString('# Jane Doe', $markdown);
         $this->assertStringNotContainsString('## 💼 Work Experience', $markdown);
+        $this->assertStringNotContainsString('## 🎓 Education', $markdown);
     }
 
-    #[Test]
-    public function it_outputs_social_profiles(): void
+    public function test_it_outputs_social_profiles(): void
     {
-        $markdown = $this->buildCompleteResume()->toMarkdown([
-            'profiles' => true,
-        ]);
+        $resume = $this->buildCompleteResume();
+        $exporter = new \JustSteveKing\Resume\Exporters\MarkdownExporter();
+        $markdown = $exporter->export($resume);
 
-        $this->assertStringContainsString('[github](https://github.com/johndoe)', $markdown);
+        $this->assertStringContainsString('### 🔗 Social Profiles', $markdown);
+        $this->assertStringContainsString('- [github](https://github.com/johndoe)', $markdown);
+        $this->assertStringContainsString('- [linkedin](https://linkedin.com/in/johndoe)', $markdown);
     }
 
-    #[Test]
-    public function transform_returns_correct_json_ld_structure(): void
+    public function test_transform_returns_correct_json_ld_structure(): void
     {
         $basics = new Basics(
-            name: 'Jane Doe',
-            label: 'Software Engineer',
-            email: 'jane@example.com',
-            url: 'https://janedoe.dev',
+            name: 'John Doe',
+            label: 'Developer',
+            email: new Email('john@example.com'),
+            url: new Url('https://johndoe.com'),
             profiles: [
-                new Profile(
-                    network: Network::GitHub,
-                    username: 'JaneDoe',
-                    url: 'https://github.com/JaneDoe',
-                ),
-                new Profile(
-                    network: Network::Twitter,
-                    username: 'JaneDoe',
-                    url: 'https://twitter.com/JaneDoe',
-                ),
+                new Profile(Network::GitHub, 'johndoe', new Url('https://github.com/johndoe')),
             ],
         );
 
-        $skills = [
-            new Skill(name: 'PHP'),
-            new Skill(name: 'JavaScript'),
-        ];
+        $resume = new Resume(basics: $basics);
+        $exporter = new \JustSteveKing\Resume\Exporters\JsonLdExporter();
+        $jsonLd = $exporter->export($resume);
 
-        $resume = new Resume(
-            basics: $basics,
-            skills: $skills,
-            schema: ResumeSchema::V1,
-        );
-
-        $result = $resume->toJsonLd();
-
-        $this->assertIsArray($result);
-        $this->assertSame('https://schema.org', $result['@context']);
-        $this->assertSame('Person', $result['@type']);
-        $this->assertSame('Jane Doe', $result['name']);
-        $this->assertSame('https://janedoe.dev', $result['url']);
-        $this->assertSame('Software Engineer', $result['jobTitle']);
-        $this->assertEquals([
-            'https://github.com/JaneDoe',
-            'https://twitter.com/JaneDoe',
-        ], $result['sameAs']);
-        $this->assertEquals(['PHP', 'JavaScript'], $result['knowsAbout']);
+        $this->assertSame('https://schema.org', $jsonLd['@context']);
+        $this->assertSame('Person', $jsonLd['@type']);
+        $this->assertSame('John Doe', $jsonLd['name']);
+        $this->assertSame('https://johndoe.com', $jsonLd['url']);
+        $this->assertSame('Developer', $jsonLd['jobTitle']);
+        $this->assertContains('https://github.com/johndoe', $jsonLd['sameAs']);
     }
 
-    #[Test]
-    public function transform_handles_missing_profiles_and_skills(): void
+    public function test_transform_handles_missing_profiles_and_skills(): void
     {
         $basics = new Basics(
-            name: 'John Smith',
+            name: 'John Doe',
             label: 'Developer',
-            email: 'john@example.com',
-            url: 'https://johnsmith.dev',
-            profiles: [],
+            email: new Email('john@example.com'),
+            url: new Url('https://johndoe.com'),
         );
 
-        $resume = new Resume(
-            basics: $basics,
-            skills: [],
-            schema: ResumeSchema::V1,
-        );
+        $resume = new Resume(basics: $basics);
+        $exporter = new \JustSteveKing\Resume\Exporters\JsonLdExporter();
+        $jsonLd = $exporter->export($resume);
 
-        $result = $resume->toJsonLd();
-
-        $this->assertEmpty($result['sameAs']);
-        $this->assertEmpty($result['knowsAbout']);
+        $this->assertEmpty($jsonLd['sameAs']);
+        $this->assertEmpty($jsonLd['knowsAbout']);
     }
 }

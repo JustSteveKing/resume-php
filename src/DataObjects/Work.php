@@ -20,15 +20,9 @@ final readonly class Work implements JsonSerializable
      * @param string $name The name of the company or organization.
      * @param string $position The position held at the company.
      * @param string|null $location The location of the company or organization.
-<<<<<<< HEAD
      * @param Url|null $url The URL of the company or organization.
      * @param string|DateTimeImmutable|null $startDate The start date of employment.
      * @param string|DateTimeImmutable|null $endDate The end date of employment.
-=======
-     * @param string|null $url The URL of the company or organization.
-     * @param \DateTimeImmutable|null $startDate The start date of employment.
-     * @param \DateTimeImmutable|null $endDate The end date of employment.
->>>>>>> feature/typed-dates
      * @param string|null $summary A brief summary of the work done.
      * @param list<string> $highlights An array of highlights or achievements during the employment.
      */
@@ -42,28 +36,16 @@ final readonly class Work implements JsonSerializable
         #[Field('url')]
         public ?Url $url = null,
         #[Field('startDate')]
-<<<<<<< HEAD
         string|DateTimeImmutable|null $startDate = null,
         #[Field('endDate')]
         string|DateTimeImmutable|null $endDate = null,
-=======
-        public ?\DateTimeImmutable $startDate = null,
-        #[Field('endDate')]
-        public ?\DateTimeImmutable $endDate = null,
->>>>>>> feature/typed-dates
         #[Field('summary')]
         public ?string $summary = null,
         #[Field('highlights')]
         public array $highlights = [],
     ) {
-<<<<<<< HEAD
         $this->startDate = is_string($startDate) ? new DateTimeImmutable($startDate) : $startDate;
         $this->endDate = is_string($endDate) ? new DateTimeImmutable($endDate) : $endDate;
-=======
-        if (null !== $this->url) {
-            $this->assertUrl($this->url);
-        }
->>>>>>> feature/typed-dates
     }
 
     /**
@@ -72,29 +54,40 @@ final readonly class Work implements JsonSerializable
      * @return array{
      *     name: string,
      *     position: string,
-     *     location: ?string,
-     *     url: ?string,
-     *     startDate: ?string,
-     *     endDate: ?string,
-     *     summary: ?string,
-     *     highlights: list<string>
+     *     location?: string,
+     *     url?: string,
+     *     startDate?: string,
+     *     endDate?: string,
+     *     summary?: string,
+     *     highlights?: list<string>
      * } The array representation of the Work instance.
      */
     public function jsonSerialize(): array
     {
-        return [
+        $data = [
             'name' => $this->name,
-            'location' => $this->location,
             'position' => $this->position,
-<<<<<<< HEAD
-            'url' => $this->url?->jsonSerialize(),
-=======
-            'url' => $this->url,
->>>>>>> feature/typed-dates
-            'startDate' => $this->startDate?->format('Y-m-d'),
-            'endDate' => $this->endDate?->format('Y-m-d'),
-            'summary' => $this->summary,
-            'highlights' => $this->highlights,
         ];
+
+        if (null !== $this->location) {
+            $data['location'] = $this->location;
+        }
+        if (null !== $this->url) {
+            $data['url'] = $this->url->jsonSerialize();
+        }
+        if (null !== $this->startDate) {
+            $data['startDate'] = $this->startDate->format('Y-m-d');
+        }
+        if (null !== $this->endDate) {
+            $data['endDate'] = $this->endDate->format('Y-m-d');
+        }
+        if (null !== $this->summary) {
+            $data['summary'] = $this->summary;
+        }
+        if ( ! empty($this->highlights)) {
+            $data['highlights'] = $this->highlights;
+        }
+
+        return $data;
     }
 }

@@ -6,13 +6,14 @@ namespace JustSteveKing\Resume\Builders;
 
 use DateTimeImmutable;
 use JustSteveKing\Resume\DataObjects\Work;
+use JustSteveKing\Resume\ValueObjects\Url;
 
 final class WorkBuilder
 {
-    private string $name;
-    private string $position;
+    private string $name = '';
+    private string $position = '';
     private ?string $location = null;
-    private ?string $url = null;
+    private string|Url|null $url = null;
     private string|DateTimeImmutable|null $startDate = null;
     private string|DateTimeImmutable|null $endDate = null;
     private ?string $summary = null;
@@ -39,7 +40,7 @@ final class WorkBuilder
         return $this;
     }
 
-    public function url(string $url): self
+    public function url(string|Url|null $url): self
     {
         $this->url = $url;
         return $this;
@@ -80,7 +81,7 @@ final class WorkBuilder
             name: $this->name,
             position: $this->position,
             location: $this->location,
-            url: $this->url,
+            url: is_string($this->url) ? new Url($this->url) : $this->url,
             startDate: $this->startDate,
             endDate: $this->endDate,
             summary: $this->summary,

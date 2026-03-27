@@ -45,26 +45,43 @@ final class JobDescription implements JsonSerializable
      *
      * @return array{
      *     name: string,
-     *     location?: string|null,
-     *     description?: string|null,
-     *     highlights: list<string>,
-     *     skills: list<string>,
-     *     tools: list<string>,
-     *     responsibilities: list<string>,
-     *     deliverables: list<string>,
+     *     location?: string,
+     *     description?: string,
+     *     highlights?: list<string>,
+     *     skills?: list<string>,
+     *     tools?: list<string>,
+     *     responsibilities?: list<string>,
+     *     deliverables?: list<string>,
      * }
      */
     public function jsonSerialize(): array
     {
-        return [
+        $data = [
             'name' => $this->name,
-            'location' => $this->location,
-            'description' => $this->description,
-            'highlights' => $this->highlights,
-            'skills' => $this->skills,
-            'tools' => $this->tools,
-            'responsibilities' => $this->responsibilities,
-            'deliverables' => $this->deliverables,
         ];
+
+        if (null !== $this->location) {
+            $data['location'] = $this->location;
+        }
+        if (null !== $this->description) {
+            $data['description'] = $this->description;
+        }
+        if ( ! empty($this->highlights)) {
+            $data['highlights'] = $this->highlights;
+        }
+        if ( ! empty($this->skills)) {
+            $data['skills'] = $this->skills;
+        }
+        if ( ! empty($this->tools)) {
+            $data['tools'] = $this->tools;
+        }
+        if ( ! empty($this->responsibilities)) {
+            $data['responsibilities'] = $this->responsibilities;
+        }
+        if ( ! empty($this->deliverables)) {
+            $data['deliverables'] = $this->deliverables;
+        }
+
+        return $data;
     }
 }

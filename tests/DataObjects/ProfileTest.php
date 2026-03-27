@@ -117,7 +117,6 @@ final class ProfileTest extends PackageTestCase
         $expected = [
             'network' => 'github',
             'username' => 'johndoe',
-            'url' => null,
         ];
 
         $this->assertSame($expected, $profile->jsonSerialize());
@@ -153,7 +152,6 @@ final class ProfileTest extends PackageTestCase
         $this->assertSame([
             'network' => 'facebook',
             'username' => 'johndoe',
-            'url' => null,
         ], $profile->jsonSerialize());
     }
 
@@ -176,7 +174,12 @@ final class ProfileTest extends PackageTestCase
         $this->assertSame($network->value, $serialized['network']);
         $this->assertSame($username, $serialized['username']);
 
-        $this->assertSame($url, $serialized['url']);
+        if (null !== $url) {
+            $this->assertArrayHasKey('url', $serialized);
+            $this->assertSame($url, $serialized['url']);
+        } else {
+            $this->assertArrayNotHasKey('url', $serialized);
+        }
     }
 
     #[Test]
@@ -211,7 +214,6 @@ final class ProfileTest extends PackageTestCase
             [
                 'network' => 'twitter',
                 'username' => 'johndoe',
-                'url' => null,
             ],
         ];
 

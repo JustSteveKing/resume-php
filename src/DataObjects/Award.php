@@ -38,16 +38,21 @@ final readonly class Award implements JsonSerializable
      *     title: string,
      *     date: string,
      *     awarder: string,
-     *     summary?: string|null
+     *     summary?: string
      * }
      */
     public function jsonSerialize(): array
     {
-        return [
+        $data = [
             'title' => $this->title,
             'date' => $this->date->format('Y-m-d'),
             'awarder' => $this->awarder,
-            'summary' => $this->summary,
         ];
+
+        if (null !== $this->summary) {
+            $data['summary'] = $this->summary;
+        }
+
+        return $data;
     }
 }

@@ -16,13 +16,8 @@ final readonly class Project implements JsonSerializable
 
     /**
      * @param string $name
-<<<<<<< HEAD
      * @param string|DateTimeImmutable|null $startDate
      * @param string|DateTimeImmutable|null $endDate
-=======
-     * @param \DateTimeImmutable|null $startDate
-     * @param \DateTimeImmutable|null $endDate
->>>>>>> feature/typed-dates
      * @param string|null $description
      * @param list<string> $highlights
      * @param Url|null $url
@@ -31,15 +26,9 @@ final readonly class Project implements JsonSerializable
         #[Field('name')]
         public string $name,
         #[Field('startDate')]
-<<<<<<< HEAD
         string|DateTimeImmutable|null $startDate = null,
         #[Field('endDate')]
         string|DateTimeImmutable|null $endDate = null,
-=======
-        public ?\DateTimeImmutable $startDate = null,
-        #[Field('endDate')]
-        public ?\DateTimeImmutable $endDate = null,
->>>>>>> feature/typed-dates
         #[Field('description')]
         public ?string $description = null,
         #[Field('highlights')]
@@ -47,14 +36,8 @@ final readonly class Project implements JsonSerializable
         #[Field('url')]
         public ?Url $url = null,
     ) {
-<<<<<<< HEAD
         $this->startDate = is_string($startDate) ? new DateTimeImmutable($startDate) : $startDate;
         $this->endDate = is_string($endDate) ? new DateTimeImmutable($endDate) : $endDate;
-=======
-        if (null !== $this->url) {
-            $this->assertUrl($this->url);
-        }
->>>>>>> feature/typed-dates
     }
 
     /**
@@ -62,22 +45,35 @@ final readonly class Project implements JsonSerializable
      *
      * @return array{
      *     name: string,
-     *     startDate?: string|null,
-     *     endDate?: string|null,
-     *     description?: string|null,
-     *     highlights: list<string>,
-     *     url?: string|null
+     *     startDate?: string,
+     *     endDate?: string,
+     *     description?: string,
+     *     highlights?: list<string>,
+     *     url?: string
      * }
      */
     public function jsonSerialize(): array
     {
-        return [
+        $data = [
             'name' => $this->name,
-            'startDate' => $this->startDate?->format('Y-m-d'),
-            'endDate' => $this->endDate?->format('Y-m-d'),
-            'description' => $this->description,
-            'highlights' => $this->highlights,
-            'url' => $this->url?->jsonSerialize(),
         ];
+
+        if (null !== $this->startDate) {
+            $data['startDate'] = $this->startDate->format('Y-m-d');
+        }
+        if (null !== $this->endDate) {
+            $data['endDate'] = $this->endDate->format('Y-m-d');
+        }
+        if (null !== $this->description) {
+            $data['description'] = $this->description;
+        }
+        if ( ! empty($this->highlights)) {
+            $data['highlights'] = $this->highlights;
+        }
+        if (null !== $this->url) {
+            $data['url'] = $this->url->jsonSerialize();
+        }
+
+        return $data;
     }
 }

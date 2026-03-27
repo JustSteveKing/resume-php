@@ -4,31 +4,35 @@ declare(strict_types=1);
 
 namespace Tests\Services;
 
+use JustSteveKing\Resume\DataObjects\Basics;
 use JustSteveKing\Resume\DataObjects\Resume;
 use JustSteveKing\Resume\Services\Validator;
-use JustSteveKing\Resume\Exceptions\ValidationException;
-use JustSteveKing\Resume\DataObjects\Basics;
+use JustSteveKing\Resume\ValueObjects\Email;
+use JustSteveKing\Resume\ValueObjects\Url;
 use Tests\PackageTestCase;
 
 final class ValidatorTest extends PackageTestCase
 {
-    private Validator $validator;
-
-    protected function setUp(): void
-    {
-        parent::setUp();
-        $this->validator = new Validator();
-    }
-
-    public function test_it_validates_a_valid_resume(): void
+    public function testValidatesAValidResume(): void
     {
         $resume = $this->buildCompleteResume();
-        $this->assertTrue($this->validator->validate($resume));
+        $validator = new Validator();
+
+        $this->assertTrue($validator->validate($resume));
     }
 
-    public function test_it_can_validate_via_resume_method(): void
+    public function testCanValidateViaResumeMethod(): void
     {
         $resume = $this->buildCompleteResume();
+
         $this->assertTrue($resume->validate());
+    }
+
+    public function testThrowsExceptionForInvalidEmailInBasics(): void
+    {
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('Invalid email format: invalid-email');
+
+        new Email('invalid-email');
     }
 }

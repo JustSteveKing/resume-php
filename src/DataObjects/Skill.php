@@ -31,16 +31,23 @@ final readonly class Skill implements JsonSerializable
      *
      * @return array{
      *     name: string,
-     *     level: string|null,
-     *     keywords: list<string>,
+     *     level?: string,
+     *     keywords?: list<string>,
      * }
      */
     public function jsonSerialize(): array
     {
-        return [
+        $data = [
             'name' => $this->name,
-            'level' => $this->level?->value,
-            'keywords' => $this->keywords,
         ];
+
+        if (null !== $this->level) {
+            $data['level'] = $this->level->value;
+        }
+        if ( ! empty($this->keywords)) {
+            $data['keywords'] = $this->keywords;
+        }
+
+        return $data;
     }
 }

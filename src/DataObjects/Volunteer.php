@@ -17,15 +17,9 @@ final readonly class Volunteer implements JsonSerializable
     /**
      * @param string $organization
      * @param string $position
-<<<<<<< HEAD
      * @param Url|null $url
      * @param string|DateTimeImmutable|null $startDate
      * @param string|DateTimeImmutable|null $endDate
-=======
-     * @param string|null $url
-     * @param \DateTimeImmutable|null $startDate
-     * @param \DateTimeImmutable|null $endDate
->>>>>>> feature/typed-dates
      * @param string|null $summary
      * @param list<string> $highlights
      */
@@ -37,28 +31,16 @@ final readonly class Volunteer implements JsonSerializable
         #[Field('url')]
         public ?Url $url = null,
         #[Field('startDate')]
-<<<<<<< HEAD
         string|DateTimeImmutable|null $startDate = null,
         #[Field('endDate')]
         string|DateTimeImmutable|null $endDate = null,
-=======
-        public ?\DateTimeImmutable $startDate = null,
-        #[Field('endDate')]
-        public ?\DateTimeImmutable $endDate = null,
->>>>>>> feature/typed-dates
         #[Field('summary')]
         public ?string $summary = null,
         #[Field('highlights')]
         public array $highlights = [],
     ) {
-<<<<<<< HEAD
         $this->startDate = is_string($startDate) ? new DateTimeImmutable($startDate) : $startDate;
         $this->endDate = is_string($endDate) ? new DateTimeImmutable($endDate) : $endDate;
-=======
-        if (null !== $this->url) {
-            $this->assertUrl($this->url);
-        }
->>>>>>> feature/typed-dates
     }
 
     /**
@@ -67,27 +49,36 @@ final readonly class Volunteer implements JsonSerializable
      * @return array{
      *     organization: string,
      *     position: string,
-     *     url: ?string,
-     *     startDate: ?string,
-     *     endDate: ?string,
-     *     summary: ?string,
-     *     highlights: list<string>,
+     *     url?: string,
+     *     startDate?: string,
+     *     endDate?: string,
+     *     summary?: string,
+     *     highlights?: list<string>,
      * }
      */
     public function jsonSerialize(): array
     {
-        return [
+        $data = [
             'organization' => $this->organization,
             'position' => $this->position,
-<<<<<<< HEAD
-            'url' => $this->url?->jsonSerialize(),
-=======
-            'url' => $this->url,
->>>>>>> feature/typed-dates
-            'startDate' => $this->startDate?->format('Y-m-d'),
-            'endDate' => $this->endDate?->format('Y-m-d'),
-            'summary' => $this->summary,
-            'highlights' => $this->highlights,
         ];
+
+        if (null !== $this->url) {
+            $data['url'] = $this->url->jsonSerialize();
+        }
+        if (null !== $this->startDate) {
+            $data['startDate'] = $this->startDate->format('Y-m-d');
+        }
+        if (null !== $this->endDate) {
+            $data['endDate'] = $this->endDate->format('Y-m-d');
+        }
+        if (null !== $this->summary) {
+            $data['summary'] = $this->summary;
+        }
+        if ( ! empty($this->highlights)) {
+            $data['highlights'] = $this->highlights;
+        }
+
+        return $data;
     }
 }

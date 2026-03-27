@@ -35,21 +35,33 @@ final readonly class Location implements JsonSerializable
      * Convert the Location instance to an array for JSON serialization.
      *
      * @return array{
-     *     address?: string|null,
-     *     postalCode?: string|null,
-     *     city?: string|null,
-     *     countryCode?: string|null,
-     *     region?: string|null
+     *     address?: string,
+     *     postalCode?: string,
+     *     city?: string,
+     *     countryCode?: string,
+     *     region?: string
      * }
      */
     public function jsonSerialize(): array
     {
-        return [
-            'address' => $this->address,
-            'postalCode' => $this->postalCode,
-            'city' => $this->city,
-            'countryCode' => $this->countryCode,
-            'region' => $this->region,
-        ];
+        $data = [];
+
+        if (null !== $this->address) {
+            $data['address'] = $this->address;
+        }
+        if (null !== $this->postalCode) {
+            $data['postalCode'] = $this->postalCode;
+        }
+        if (null !== $this->city) {
+            $data['city'] = $this->city;
+        }
+        if (null !== $this->countryCode) {
+            $data['countryCode'] = $this->countryCode;
+        }
+        if (null !== $this->region) {
+            $data['region'] = $this->region;
+        }
+
+        return $data;
     }
 }
