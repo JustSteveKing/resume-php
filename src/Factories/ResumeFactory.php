@@ -27,10 +27,22 @@ use JustSteveKing\Resume\Enums\SkillLevel;
 use JustSteveKing\Resume\Exceptions\HydrationException;
 use JustSteveKing\Resume\ValueObjects\Email;
 use JustSteveKing\Resume\ValueObjects\Url;
+use Symfony\Component\Yaml\Yaml;
 use Throwable;
 
 final class ResumeFactory
 {
+    public static function fromYaml(string $yaml): Resume
+    {
+        try {
+            /** @var array<string, mixed> $data */
+            $data = Yaml::parse($yaml);
+            return self::fromArray($data);
+        } catch (Throwable $e) {
+            throw new HydrationException("Invalid YAML provided: {$e->getMessage()}", $e);
+        }
+    }
+
     public static function fromJson(string $json): Resume
     {
         try {
