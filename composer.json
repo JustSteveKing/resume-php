@@ -10,6 +10,9 @@
     "library"
   ],
   "homepage": "https://github.com/juststeveking/resume-php",
+  "bin": [
+    "bin/resume"
+  ],
   "require": {
     "php": "^8.4",
     "opis/json-schema": "^2.6",

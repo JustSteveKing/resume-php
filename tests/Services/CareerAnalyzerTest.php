@@ -5,12 +5,10 @@ declare(strict_types=1);
 namespace Tests\Services;
 
 use DateTimeImmutable;
-use JustSteveKing\Resume\Builders\ResumeBuilder;
 use JustSteveKing\Resume\DataObjects\Basics;
 use JustSteveKing\Resume\DataObjects\Resume;
 use JustSteveKing\Resume\DataObjects\Skill;
 use JustSteveKing\Resume\DataObjects\Work;
-use JustSteveKing\Resume\Services\CareerAnalyzer;
 use Tests\PackageTestCase;
 
 final class CareerAnalyzerTest extends PackageTestCase
@@ -32,11 +30,11 @@ final class CareerAnalyzerTest extends PackageTestCase
                     startDate: new DateTimeImmutable('2022-01-01'),
                     endDate: new DateTimeImmutable('2024-01-01'), // 2 years
                 ),
-            ]
+            ],
         );
 
         $analyzer = $resume->getInsights();
-        
+
         // 3.0 years (approximately, allowing for leap years / roundings)
         $this->assertEquals(3.0, $analyzer->getTotalYearsExperience());
     }
@@ -61,7 +59,7 @@ final class CareerAnalyzerTest extends PackageTestCase
                 new Skill(name: 'PHP'),
                 new Skill(name: 'Laravel'),
                 new Skill(name: 'Python'),
-            ]
+            ],
         );
 
         $analyzer = $resume->getInsights();
@@ -89,7 +87,7 @@ final class CareerAnalyzerTest extends PackageTestCase
                     startDate: new DateTimeImmutable('2020-08-01'), // 2 month gap
                     endDate: new DateTimeImmutable('2021-01-01'),
                 ),
-            ]
+            ],
         );
 
         $analyzer = $resume->getInsights();

@@ -13,7 +13,7 @@ final class TranslatorTest extends PackageTestCase
     {
         $translator = Translator::getInstance('en');
         $translator->setLocale('en');
-        
+
         $this->assertSame('Work Experience', $translator->trans('sections.work'));
         $this->assertSame('Email', $translator->trans('contact.email'));
     }
@@ -22,7 +22,7 @@ final class TranslatorTest extends PackageTestCase
     {
         $translator = Translator::getInstance('en');
         $translator->setLocale('cy');
-        
+
         $this->assertSame('Profiad Gwaith', $translator->trans('sections.work'));
         $this->assertSame('E-bost', $translator->trans('contact.email'));
     }
@@ -31,7 +31,7 @@ final class TranslatorTest extends PackageTestCase
     {
         $translator1 = Translator::getInstance('en');
         $translator2 = Translator::getInstance('cy');
-        
+
         $this->assertSame($translator1, $translator2);
     }
 }

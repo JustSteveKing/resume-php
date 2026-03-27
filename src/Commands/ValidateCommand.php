@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace JustSteveKing\Resume\Commands;
 
+use InvalidArgumentException;
 use JustSteveKing\Resume\Factories\ResumeFactory;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
@@ -47,12 +48,12 @@ final class ValidateCommand extends Command
             $resume = match ($extension) {
                 'json' => ResumeFactory::fromJson($content),
                 'yaml', 'yml' => ResumeFactory::fromYaml($content),
-                default => throw new \InvalidArgumentException("Unsupported file extension: {$extension}"),
+                default => throw new InvalidArgumentException("Unsupported file extension: {$extension}"),
             };
 
             $resume->validate();
             $io->success('The résumé is valid!');
-            
+
             return Command::SUCCESS;
         } catch (Throwable $e) {
             $io->error($e->getMessage());

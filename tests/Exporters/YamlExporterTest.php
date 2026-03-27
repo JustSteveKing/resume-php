@@ -14,9 +14,9 @@ final class YamlExporterTest extends PackageTestCase
     {
         $resume = $this->buildCompleteResume();
         $exporter = new YamlExporter();
-        
+
         $yaml = $exporter->export($resume);
-        
+
         $this->assertIsString($yaml);
         $this->assertStringContainsString('basics:', $yaml);
         $this->assertStringContainsString('John Doe', $yaml);
@@ -26,10 +26,10 @@ final class YamlExporterTest extends PackageTestCase
     {
         $resume = $this->buildCompleteResume();
         $exporter = new YamlExporter();
-        
+
         $yaml = $exporter->export($resume);
         $hydrated = ResumeFactory::fromYaml($yaml);
-        
+
         $this->assertSame($resume->basics->name, $hydrated->basics->name);
         $this->assertSame($resume->basics->email->value, $hydrated->basics->email->value);
         $this->assertCount(count($resume->work), $hydrated->work);

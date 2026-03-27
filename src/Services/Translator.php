@@ -16,7 +16,7 @@ final class Translator
     {
         $this->translator = new SymfonyTranslator($locale);
         $this->translator->addLoader('php', new PhpFileLoader());
-        
+
         // Load default translations
         $langDir = __DIR__ . '/../../resources/lang';
         if (is_dir($langDir)) {
@@ -32,7 +32,7 @@ final class Translator
 
     public static function getInstance(string $locale = 'en'): self
     {
-        if (self::$instance === null) {
+        if (null === self::$instance) {
             self::$instance = new self($locale);
         }
 

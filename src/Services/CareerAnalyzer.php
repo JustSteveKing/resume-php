@@ -25,7 +25,7 @@ final readonly class CareerAnalyzer
         foreach ($this->resume->work as $work) {
             $start = $work->startDate ?? new DateTimeImmutable();
             $end = $work->endDate ?? new DateTimeImmutable();
-            
+
             $diff = $start->diff($end);
             $totalDays += (int) $diff->format('%a');
         }
@@ -42,7 +42,7 @@ final readonly class CareerAnalyzer
     {
         return array_values(array_unique(array_map(
             fn($work) => $work->position,
-            $this->resume->work
+            $this->resume->work,
         )));
     }
 
@@ -54,11 +54,11 @@ final readonly class CareerAnalyzer
     public function getSkillFrequency(): array
     {
         $frequencies = [];
-        $skillNames = array_map(fn($skill) => strtolower($skill->name), $this->resume->skills);
+        $skillNames = array_map(fn($skill) => mb_strtolower($skill->name), $this->resume->skills);
 
         foreach ($this->resume->work as $work) {
-            $text = strtolower($work->summary . ' ' . implode(' ', $work->highlights));
-            
+            $text = mb_strtolower($work->summary . ' ' . implode(' ', $work->highlights));
+
             foreach ($skillNames as $skill) {
                 if (str_contains($text, $skill)) {
                     $frequencies[$skill] = ($frequencies[$skill] ?? 0) + 1;
@@ -78,9 +78,9 @@ final readonly class CareerAnalyzer
     public function getWorkGaps(): array
     {
         $workEntries = $this->resume->work;
-        
+
         // Sort by start date
-        usort($workEntries, function($a, $b) {
+        usort($workEntries, function ($a, $b) {
             $aStart = $a->startDate ?? new DateTimeImmutable();
             $bStart = $b->startDate ?? new DateTimeImmutable();
             return $aStart <=> $bStart;
@@ -91,11 +91,11 @@ final readonly class CareerAnalyzer
 
         foreach ($workEntries as $work) {
             $currentStart = $work->startDate;
-            
-            if ($previousEnd !== null && $currentStart !== null) {
+
+            if (null !== $previousEnd && null !== $currentStart) {
                 $diff = $previousEnd->diff($currentStart);
                 $days = (int) $diff->format('%r%a');
-                
+
                 if ($days > 30) {
                     $gaps[] = [
                         'start' => $previousEnd->format('Y-m-d'),
@@ -104,9 +104,9 @@ final readonly class CareerAnalyzer
                     ];
                 }
             }
-            
+
             $currentEnd = $work->endDate ?? new DateTimeImmutable();
-            if ($previousEnd === null || $currentEnd > $previousEnd) {
+            if (null === $previousEnd || $currentEnd > $previousEnd) {
                 $previousEnd = $currentEnd;
             }
         }

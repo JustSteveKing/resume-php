@@ -4,10 +4,12 @@ declare(strict_types=1);
 
 namespace JustSteveKing\Resume\Commands;
 
+use InvalidArgumentException;
 use JustSteveKing\Resume\Exporters\JsonLdExporter;
 use JustSteveKing\Resume\Exporters\MarkdownExporter;
 use JustSteveKing\Resume\Exporters\YamlExporter;
 use JustSteveKing\Resume\Factories\ResumeFactory;
+use RuntimeException;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
@@ -52,30 +54,30 @@ final class ExportCommand extends Command
         try {
             $extension = pathinfo($filePath, PATHINFO_EXTENSION);
             $content = file_get_contents($filePath);
-            
+
             if (false === $content) {
-                throw new \RuntimeException("Failed to read file: {$filePath}");
+                throw new RuntimeException("Failed to read file: {$filePath}");
             }
 
             $resume = match ($extension) {
                 'json' => ResumeFactory::fromJson($content),
                 'yaml', 'yml' => ResumeFactory::fromYaml($content),
-                default => throw new \InvalidArgumentException("Unsupported source file extension: {$extension}"),
+                default => throw new InvalidArgumentException("Unsupported source file extension: {$extension}"),
             };
 
-            $exporter = match (strtolower($format)) {
+            $exporter = match (mb_strtolower($format)) {
                 'markdown', 'md' => new MarkdownExporter(locale: $locale),
                 'yaml', 'yml' => new YamlExporter(),
                 'json-ld', 'jsonld' => new JsonLdExporter(),
-                default => throw new \InvalidArgumentException("Unsupported output format: {$format}"),
+                default => throw new InvalidArgumentException("Unsupported output format: {$format}"),
             };
 
             $result = $exporter->export($resume);
-            
+
             if (is_array($result)) {
                 $encoded = json_encode($result, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
                 if (false === $encoded) {
-                    throw new \RuntimeException('Failed to encode result to JSON');
+                    throw new RuntimeException('Failed to encode result to JSON');
                 }
                 $result = $encoded;
             }

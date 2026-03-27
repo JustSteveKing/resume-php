@@ -13,9 +13,9 @@ final class MarkdownExporterI18nTest extends PackageTestCase
     {
         $resume = $this->buildCompleteResume();
         $exporter = new MarkdownExporter(locale: 'en');
-        
+
         $md = $exporter->export($resume);
-        
+
         $this->assertStringContainsString('## 💼 Work Experience', $md);
         $this->assertStringContainsString('📧 Email:', $md);
     }
@@ -24,9 +24,9 @@ final class MarkdownExporterI18nTest extends PackageTestCase
     {
         $resume = $this->buildCompleteResume();
         $exporter = new MarkdownExporter(locale: 'cy');
-        
+
         $md = $exporter->export($resume);
-        
+
         $this->assertStringContainsString('## 💼 Profiad Gwaith', $md);
         $this->assertStringContainsString('📧 E-bost:', $md);
     }

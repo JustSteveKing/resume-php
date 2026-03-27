@@ -79,7 +79,7 @@ final class MarkdownExporter implements Exporter
             if (null !== $resume->basics->email) {
                 $md[] = "📧 {$emailLabel}: [{$resume->basics->email->value}](mailto:{$resume->basics->email->value})";
             }
-            
+
             if (null !== $resume->basics->url) {
                 $md[] = "🌍 {$websiteLabel}: [{$resume->basics->url->value}]({$resume->basics->url->value})";
             }
@@ -103,7 +103,7 @@ final class MarkdownExporter implements Exporter
         if ($options['work'] && ! empty($resume->work)) {
             $workLabel = $this->translator->trans('sections.work');
             $presentLabel = $this->translator->trans('time.present');
-            
+
             $md[] = "\n## 💼 {$workLabel}";
             foreach ($resume->work as $job) {
                 $startDate = $job->startDate?->format('Y-m') ?? $presentLabel;
