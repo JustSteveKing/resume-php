@@ -6,7 +6,6 @@ namespace Tests\EdgeCases;
 
 use JustSteveKing\Resume\DataObjects\Basics;
 use JustSteveKing\Resume\DataObjects\Location;
-use JustSteveKing\Resume\Enums\Network;
 use JustSteveKing\Resume\ValueObjects\Email;
 use JustSteveKing\Resume\ValueObjects\Url;
 use PHPUnit\Framework\TestCase;

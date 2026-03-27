@@ -14,7 +14,7 @@ final class ResumeFactoryTest extends PackageTestCase
     {
         $json = file_get_contents(__DIR__ . '/../../resume/full.json');
         $data = json_decode($json, true);
-        
+
         $resume = ResumeFactory::fromArray($data);
 
         $this->assertInstanceOf(Resume::class, $resume);
@@ -24,7 +24,7 @@ final class ResumeFactoryTest extends PackageTestCase
     public function test_it_can_hydrate_from_json(): void
     {
         $json = file_get_contents(__DIR__ . '/../../resume/full.json');
-        
+
         $resume = ResumeFactory::fromJson($json);
 
         $this->assertInstanceOf(Resume::class, $resume);

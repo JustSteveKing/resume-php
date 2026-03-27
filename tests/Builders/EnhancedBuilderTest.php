@@ -18,15 +18,15 @@ final class EnhancedBuilderTest extends PackageTestCase
             ->label('Developer')
             ->email('john@example.com')
             ->location()
-                ->city('San Francisco')
-                ->countryCode('US')
+            ->city('San Francisco')
+            ->countryCode('US')
             ->end()
-        ->end()
-        ->addWork()
+            ->end()
+            ->addWork()
             ->name('Acme Corp')
             ->position('Senior Developer')
-        ->end()
-        ->build();
+            ->end()
+            ->build();
 
         $this->assertEquals('John Doe', $resume->basics->name);
         $this->assertEquals('San Francisco', $resume->basics->location->city);

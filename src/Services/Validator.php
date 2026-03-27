@@ -30,10 +30,10 @@ final class Validator
     {
         $encoded = json_encode($resume);
         if (false === $encoded) {
-             throw new ValidationException("Failed to encode resume to JSON");
+            throw new ValidationException("Failed to encode resume to JSON");
         }
         $data = json_decode($encoded, false);
-        
+
         $schemaContent = file_get_contents($this->schemaPath);
         if (false === $schemaContent) {
             throw new ValidationException("Failed to read schema file at {$this->schemaPath}");

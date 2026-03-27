@@ -28,7 +28,7 @@ final class MarkdownExporter implements Exporter
             'education' => true,
             'skills' => true,
             'languages' => true,
-        ]
+        ],
     ) {}
 
     /**

@@ -22,6 +22,7 @@ use JustSteveKing\Resume\Enums\EducationLevel;
 use JustSteveKing\Resume\Enums\SkillLevel;
 use JustSteveKing\Resume\ValueObjects\Email;
 use JustSteveKing\Resume\ValueObjects\Url;
+use LogicException;
 use Tests\PackageTestCase;
 
 final class ResumeBuilderTest extends PackageTestCase
@@ -242,7 +243,7 @@ final class ResumeBuilderTest extends PackageTestCase
 
     public function testThrowsExceptionWhenBuildingWithoutBasics(): void
     {
-        $this->expectException(\LogicException::class);
+        $this->expectException(LogicException::class);
         $this->expectExceptionMessage('Basics section is required');
 
         (new ResumeBuilder())->build();

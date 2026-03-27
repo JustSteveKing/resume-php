@@ -113,10 +113,10 @@ final class ResumeFactory
     {
         /** @var array<array<string, mixed>> $profiles */
         $profiles = (isset($data['profiles']) && is_array($data['profiles'])) ? $data['profiles'] : [];
-        
+
         /** @var array<string, mixed>|null $locationData */
         $locationData = (isset($data['location']) && is_array($data['location'])) ? $data['location'] : null;
-        $location = ($locationData !== null) ? self::hydrateLocation($locationData) : null;
+        $location = (null !== $locationData) ? self::hydrateLocation($locationData) : null;
 
         return new Basics(
             name: is_string($data['name'] ?? null) ? (string) $data['name'] : '',
@@ -153,7 +153,7 @@ final class ResumeFactory
     private static function hydrateProfile(array $data): Profile
     {
         $networkValue = is_string($data['network'] ?? null) ? (string) $data['network'] : '';
-        
+
         return new Profile(
             network: Network::tryFrom($networkValue) ?? Network::Other,
             username: is_string($data['username'] ?? null) ? (string) $data['username'] : '',

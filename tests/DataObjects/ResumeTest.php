@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Tests\DataObjects;
 
 use JustSteveKing\Resume\DataObjects\Basics;
-use JustSteveKing\Resume\DataObjects\Location;
 use JustSteveKing\Resume\DataObjects\Profile;
 use JustSteveKing\Resume\DataObjects\Resume;
 use JustSteveKing\Resume\Enums\Network;

@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace JustSteveKing\Resume\Builders;
 
 use JustSteveKing\Resume\DataObjects\Basics;
-use JustSteveKing\Resume\DataObjects\Location;
 use JustSteveKing\Resume\DataObjects\Profile;
 use JustSteveKing\Resume\ValueObjects\Email;
 use JustSteveKing\Resume\ValueObjects\Url;

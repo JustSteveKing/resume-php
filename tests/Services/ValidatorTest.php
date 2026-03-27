@@ -4,11 +4,9 @@ declare(strict_types=1);
 
 namespace Tests\Services;
 
-use JustSteveKing\Resume\DataObjects\Basics;
-use JustSteveKing\Resume\DataObjects\Resume;
+use InvalidArgumentException;
 use JustSteveKing\Resume\Services\Validator;
 use JustSteveKing\Resume\ValueObjects\Email;
-use JustSteveKing\Resume\ValueObjects\Url;
 use Tests\PackageTestCase;
 
 final class ValidatorTest extends PackageTestCase
@@ -30,7 +28,7 @@ final class ValidatorTest extends PackageTestCase
 
     public function testThrowsExceptionForInvalidEmailInBasics(): void
     {
-        $this->expectException(\InvalidArgumentException::class);
+        $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('Invalid email format: invalid-email');
 
         new Email('invalid-email');

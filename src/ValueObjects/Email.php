@@ -42,6 +42,21 @@ final readonly class Email implements JsonSerializable, Stringable
         }
     }
 
+    public function __toString(): string
+    {
+        return $this->value;
+    }
+
+    public static function fromString(string $value): self
+    {
+        return new self($value);
+    }
+
+    public function jsonSerialize(): string
+    {
+        return $this->value;
+    }
+
     private function isValidDomain(string $domain): bool
     {
         // Basic domain validation
@@ -56,20 +71,5 @@ final readonly class Email implements JsonSerializable, Stringable
 
         // Check for valid characters
         return 1 === preg_match('/^[a-zA-Z0-9.-]+$/', $domain);
-    }
-
-    public static function fromString(string $value): self
-    {
-        return new self($value);
-    }
-
-    public function __toString(): string
-    {
-        return $this->value;
-    }
-
-    public function jsonSerialize(): string
-    {
-        return $this->value;
     }
 }

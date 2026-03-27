@@ -50,24 +50,9 @@ final class ResumeIntegrationTest extends PackageTestCase
         $this->assertArrayHasKey('education', $data);
         $this->assertArrayHasKey('skills', $data);
         $this->assertSame('https://jsonresume.org/schema/schema.json', $data['$schema']);
-        
+
         // Ensure no null values are present in the serialized output
         $this->assertNoNullValues($data);
-    }
-
-    /**
-     * Recursive helper to ensure no null values exist in the array.
-     * 
-     * @param array<string, mixed> $data
-     */
-    private function assertNoNullValues(array $data): void
-    {
-        foreach ($data as $key => $value) {
-            $this->assertNotNull($value, "Found null value for key: {$key}");
-            if (is_array($value)) {
-                $this->assertNoNullValues($value);
-            }
-        }
     }
 
     public function testPerformanceWithLargeResume(): void
@@ -82,7 +67,7 @@ final class ResumeIntegrationTest extends PackageTestCase
 
         for ($i = 0; $i < 100; $i++) {
             $builder->addWork(new Work(
-                name: "Company $i",
+                name: "Company {$i}",
                 position: 'Developer',
                 startDate: new DateTimeImmutable('2020-01-01'),
             ));
@@ -95,5 +80,20 @@ final class ResumeIntegrationTest extends PackageTestCase
 
         $this->assertLessThan(0.1, $end - $start);
         $this->assertCount(100, $resume->work);
+    }
+
+    /**
+     * Recursive helper to ensure no null values exist in the array.
+     *
+     * @param array<string, mixed> $data
+     */
+    private function assertNoNullValues(array $data): void
+    {
+        foreach ($data as $key => $value) {
+            $this->assertNotNull($value, "Found null value for key: {$key}");
+            if (is_array($value)) {
+                $this->assertNoNullValues($value);
+            }
+        }
     }
 }
