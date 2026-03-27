@@ -6,7 +6,7 @@ namespace JustSteveKing\Resume\Attributes;
 
 use Attribute;
 
-#[Attribute(Attribute::TARGET_PROPERTY)]
+#[Attribute(Attribute::TARGET_PROPERTY | Attribute::TARGET_PARAMETER)]
 final readonly class Field
 {
     public function __construct(

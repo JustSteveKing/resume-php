@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Tests;
 
+use DateTimeImmutable;
 use JustSteveKing\Resume\Builders\ResumeBuilder;
 use JustSteveKing\Resume\DataObjects\Award;
 use JustSteveKing\Resume\DataObjects\Basics;
@@ -20,6 +21,8 @@ use JustSteveKing\Resume\DataObjects\Work;
 use JustSteveKing\Resume\Enums\EducationLevel;
 use JustSteveKing\Resume\Enums\Network;
 use JustSteveKing\Resume\Enums\SkillLevel;
+use JustSteveKing\Resume\ValueObjects\Email;
+use JustSteveKing\Resume\ValueObjects\Url;
 use PHPUnit\Framework\TestCase;
 
 abstract class PackageTestCase extends TestCase
@@ -35,15 +38,15 @@ abstract class PackageTestCase extends TestCase
         );
 
         $profiles = [
-            new Profile(Network::GitHub, 'johndoe', 'https://github.com/johndoe'),
-            new Profile(Network::LinkedIn, 'johndoe', 'https://linkedin.com/in/johndoe'),
+            new Profile(Network::GitHub, 'johndoe', new Url('https://github.com/johndoe')),
+            new Profile(Network::LinkedIn, 'johndoe', new Url('https://linkedin.com/in/johndoe')),
         ];
 
         $basics = new Basics(
             name: 'John Doe',
             label: 'Software Engineer',
-            email: 'john@example.com',
-            url: 'https://johndoe.com',
+            email: new Email('john@example.com'),
+            url: new Url('https://johndoe.com'),
             summary: 'Experienced software engineer with 5+ years in web development.',
             location: $location,
             profiles: $profiles,
@@ -54,23 +57,23 @@ abstract class PackageTestCase extends TestCase
             ->addWork(new Work(
                 name: 'Tech Corp',
                 position: 'Senior Developer',
-                startDate: '2020-01-01',
-                endDate: '2023-12-31',
+                startDate: new DateTimeImmutable('2020-01-01'),
+                endDate: new DateTimeImmutable('2023-12-31'),
                 summary: 'Led development of core platform features',
                 highlights: ['Improved performance by 40%', 'Mentored junior developers'],
             ))
             ->addWork(new Work(
                 name: 'Startup Inc',
                 position: 'Full Stack Developer',
-                startDate: '2018-01-01',
-                endDate: '2019-12-31',
+                startDate: new DateTimeImmutable('2018-01-01'),
+                endDate: new DateTimeImmutable('2019-12-31'),
             ))
             ->addEducation(new Education(
                 institution: 'University of Technology',
                 area: 'Computer Science',
                 studyType: EducationLevel::Bachelor,
-                startDate: '2014-09-01',
-                endDate: '2018-06-01',
+                startDate: new DateTimeImmutable('2014-09-01'),
+                endDate: new DateTimeImmutable('2018-06-01'),
             ))
             ->addSkill(new Skill(
                 name: 'PHP',
@@ -89,29 +92,29 @@ abstract class PackageTestCase extends TestCase
             ))
             ->addProject(new Project(
                 name: 'E-commerce Platform',
-                startDate: '2023-01-01',
-                endDate: '2023-06-01',
+                startDate: new DateTimeImmutable('2023-01-01'),
+                endDate: new DateTimeImmutable('2023-06-01'),
                 description: 'Built a full-stack e-commerce platform',
                 highlights: ['Handled 10k+ users', 'Implemented payment gateway'],
-                url: 'https://github.com/johndoe/ecommerce',
+                url: new Url('https://github.com/johndoe/ecommerce'),
             ))
             ->addLanguage(new Language('English', 'Native'))
             ->addLanguage(new Language('Spanish', 'Conversational'))
             ->addVolunteer(new Volunteer(
                 organization: 'Local Food Bank',
                 position: 'Web Developer',
-                startDate: '2019-01-01',
-                endDate: '2020-01-01',
+                startDate: new DateTimeImmutable('2019-01-01'),
+                endDate: new DateTimeImmutable('2020-01-01'),
             ))
             ->addAward(new Award(
                 title: 'Employee of the Year',
-                date: '2022-12-01',
+                date: new DateTimeImmutable('2022-12-01'),
                 awarder: 'Tech Corp',
             ))
             ->addPublication(new Publication(
                 name: 'Modern PHP Development',
                 publisher: 'Tech Journal',
-                releaseDate: '2023-03-01',
+                releaseDate: new DateTimeImmutable('2023-03-01'),
             ))
             ->build();
     }

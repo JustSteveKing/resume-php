@@ -46,28 +46,43 @@ final class ResumeBuilder
     /** @var list<Project> $projects */
     private array $projects = [];
 
+    private ?BasicsBuilder $basicsBuilder = null;
+    /** @var list<WorkBuilder> $workBuilders */
+    private array $workBuilders = [];
+
     /**
      * Add basics to the résumé.
      *
-     * @param Basics $basics
-     * @return ResumeBuilder
+     * @param Basics|null $basics
+     * @return ResumeBuilder|BasicsBuilder
      */
-    public function basics(Basics $basics): ResumeBuilder
+    public function basics(?Basics $basics = null): ResumeBuilder|BasicsBuilder
     {
-        $this->basics = $basics;
-        return $this;
+        if (null !== $basics) {
+            $this->basics = $basics;
+            return $this;
+        }
+
+        $this->basicsBuilder = new BasicsBuilder($this);
+        return $this->basicsBuilder;
     }
 
     /**
      * Add a work experience to the résumé.
      *
-     * @param Work $work
-     * @return ResumeBuilder
+     * @param Work|null $work
+     * @return ResumeBuilder|WorkBuilder
      */
-    public function addWork(Work $work): ResumeBuilder
+    public function addWork(?Work $work = null): ResumeBuilder|WorkBuilder
     {
-        $this->work[] = $work;
-        return $this;
+        if (null !== $work) {
+            $this->work[] = $work;
+            return $this;
+        }
+
+        $builder = new WorkBuilder($this);
+        $this->workBuilders[] = $builder;
+        return $builder;
     }
 
     /**
@@ -198,15 +213,25 @@ final class ResumeBuilder
      */
     public function build(): Resume
     {
-        if ( ! $this->basics) {
+        $basics = $this->basics ?? $this->basicsBuilder?->build();
+
+        if ( ! $basics) {
             throw new LogicException(
                 message: 'Basics section is required',
             );
         }
 
+        $work = array_merge(
+            $this->work,
+            array_map(
+                static fn(WorkBuilder $builder): Work => $builder->build(),
+                $this->workBuilders,
+            ),
+        );
+
         return new Resume(
-            basics: $this->basics,
-            work: $this->work,
+            basics: $basics,
+            work: $work,
             volunteer: $this->volunteer,
             education: $this->education,
             awards: $this->awards,

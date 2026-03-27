@@ -13,6 +13,7 @@ final class JobDescription implements JsonSerializable
      * Create a new JobDescription instance.
      *
      * @param string $name The name of the job description.
+     * @param string|null $location The location of the job.
      * @param string|null $description A brief description of the job.
      * @param list<string> $highlights Key highlights of the job.
      * @param list<string> $skills Required skills for the job.
@@ -23,6 +24,8 @@ final class JobDescription implements JsonSerializable
     public function __construct(
         #[Field('name')]
         public string $name,
+        #[Field('location')]
+        public ?string $location = null,
         #[Field('description')]
         public ?string $description = null,
         #[Field('highlights')]
@@ -42,24 +45,43 @@ final class JobDescription implements JsonSerializable
      *
      * @return array{
      *     name: string,
-     *     description?: string|null,
-     *     highlights: list<string>,
-     *     skills: list<string>,
-     *     tools: list<string>,
-     *     responsibilities: list<string>,
-     *     deliverables: list<string>,
+     *     location?: string,
+     *     description?: string,
+     *     highlights?: list<string>,
+     *     skills?: list<string>,
+     *     tools?: list<string>,
+     *     responsibilities?: list<string>,
+     *     deliverables?: list<string>,
      * }
      */
     public function jsonSerialize(): array
     {
-        return [
+        $data = [
             'name' => $this->name,
-            'description' => $this->description,
-            'highlights' => $this->highlights,
-            'skills' => $this->skills,
-            'tools' => $this->tools,
-            'responsibilities' => $this->responsibilities,
-            'deliverables' => $this->deliverables,
         ];
+
+        if (null !== $this->location) {
+            $data['location'] = $this->location;
+        }
+        if (null !== $this->description) {
+            $data['description'] = $this->description;
+        }
+        if ( ! empty($this->highlights)) {
+            $data['highlights'] = $this->highlights;
+        }
+        if ( ! empty($this->skills)) {
+            $data['skills'] = $this->skills;
+        }
+        if ( ! empty($this->tools)) {
+            $data['tools'] = $this->tools;
+        }
+        if ( ! empty($this->responsibilities)) {
+            $data['responsibilities'] = $this->responsibilities;
+        }
+        if ( ! empty($this->deliverables)) {
+            $data['deliverables'] = $this->deliverables;
+        }
+
+        return $data;
     }
 }

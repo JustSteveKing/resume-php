@@ -4,24 +4,24 @@ declare(strict_types=1);
 
 namespace JustSteveKing\Resume\DataObjects;
 
+use DateTimeImmutable;
 use JsonSerializable;
 use JustSteveKing\Resume\Attributes\Field;
-use JustSteveKing\Resume\Concerns\ValidatesDate;
-use JustSteveKing\Resume\Concerns\ValidatesUrl;
 use JustSteveKing\Resume\Enums\EducationLevel;
+use JustSteveKing\Resume\ValueObjects\Url;
 
 final readonly class Education implements JsonSerializable
 {
-    use ValidatesDate;
-    use ValidatesUrl;
+    public ?DateTimeImmutable $startDate;
+    public ?DateTimeImmutable $endDate;
 
     /**
      * @param string $institution
-     * @param string|null $url
+     * @param Url|null $url
      * @param string|null $area
      * @param EducationLevel|null $studyType
-     * @param string|null $startDate
-     * @param string|null $endDate
+     * @param string|DateTimeImmutable|null $startDate
+     * @param string|DateTimeImmutable|null $endDate
      * @param string|null $score
      * @param list<string> $courses
      */
@@ -29,31 +29,22 @@ final readonly class Education implements JsonSerializable
         #[Field('institution')]
         public string $institution,
         #[Field('url')]
-        public ?string $url = null,
+        public ?Url $url = null,
         #[Field('area')]
         public ?string $area = null,
         #[Field('studyType')]
         public ?EducationLevel $studyType = null,
         #[Field('startDate')]
-        public ?string $startDate = null,
+        string|DateTimeImmutable|null $startDate = null,
         #[Field('endDate')]
-        public ?string $endDate = null,
+        string|DateTimeImmutable|null $endDate = null,
         #[Field('score')]
         public ?string $score = null,
         #[Field('courses')]
         public array $courses = [],
     ) {
-        if (null !== $this->url) {
-            $this->assertUrl($this->url);
-        }
-
-        if (null !== $this->startDate) {
-            $this->assertDate($this->startDate);
-        }
-
-        if (null !== $this->endDate) {
-            $this->assertDate($this->endDate);
-        }
+        $this->startDate = is_string($startDate) ? new DateTimeImmutable($startDate) : $startDate;
+        $this->endDate = is_string($endDate) ? new DateTimeImmutable($endDate) : $endDate;
     }
 
     /**
@@ -61,26 +52,43 @@ final readonly class Education implements JsonSerializable
      *
      * @return array{
      *     institution: string,
-     *     url?: string|null,
-     *     area?: string|null,
-     *     studyType?: string|null,
-     *     startDate?: string|null,
-     *     endDate?: string|null,
-     *     score?: string|null,
-     *     courses: list<string>
+     *     url?: string,
+     *     area?: string,
+     *     studyType?: string,
+     *     startDate?: string,
+     *     endDate?: string,
+     *     score?: string,
+     *     courses?: list<string>
      * }
      */
     public function jsonSerialize(): array
     {
-        return [
+        $data = [
             'institution' => $this->institution,
-            'url' => $this->url,
-            'area' => $this->area,
-            'studyType' => $this->studyType?->value,
-            'startDate' => $this->startDate,
-            'endDate' => $this->endDate,
-            'score' => $this->score,
-            'courses' => $this->courses,
         ];
+
+        if (null !== $this->url) {
+            $data['url'] = $this->url->jsonSerialize();
+        }
+        if (null !== $this->area) {
+            $data['area'] = $this->area;
+        }
+        if (null !== $this->studyType) {
+            $data['studyType'] = $this->studyType->value;
+        }
+        if (null !== $this->startDate) {
+            $data['startDate'] = $this->startDate->format('Y-m-d');
+        }
+        if (null !== $this->endDate) {
+            $data['endDate'] = $this->endDate->format('Y-m-d');
+        }
+        if (null !== $this->score) {
+            $data['score'] = $this->score;
+        }
+        if ( ! empty($this->courses)) {
+            $data['courses'] = $this->courses;
+        }
+
+        return $data;
     }
 }

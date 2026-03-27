@@ -27,14 +27,19 @@ final readonly class Language implements JsonSerializable
      *
      * @return array{
      *     language: string,
-     *     fluency?: string|null
+     *     fluency?: string
      * }
      */
     public function jsonSerialize(): array
     {
-        return [
+        $data = [
             'language' => $this->language,
-            'fluency' => $this->fluency,
         ];
+
+        if (null !== $this->fluency) {
+            $data['fluency'] = $this->fluency;
+        }
+
+        return $data;
     }
 }

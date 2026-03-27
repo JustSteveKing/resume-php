@@ -7,6 +7,8 @@ namespace JustSteveKing\Resume\DataObjects;
 use JsonSerializable;
 use JustSteveKing\Resume\Attributes\Field;
 use JustSteveKing\Resume\Enums\ResumeSchema;
+use JustSteveKing\Resume\Exceptions\ValidationException;
+use JustSteveKing\Resume\Services\Validator;
 
 final readonly class Resume implements JsonSerializable
 {
@@ -55,7 +57,7 @@ final readonly class Resume implements JsonSerializable
     ) {}
 
     /**
-     * @return non-empty-array<'$schema'|'basics'|'work'|'volunteer'|'education'|'awards'|'certificates'|'publications'|'skills'|'languages'|'interests'|'references'|'projects', mixed>
+     * @return non-empty-array<string, mixed>
      */
     public function jsonSerialize(): array
     {
@@ -100,7 +102,7 @@ final readonly class Resume implements JsonSerializable
     {
         return [
             'name' => $this->basics->name,
-            'email' => $this->basics->email,
+            'email' => $this->basics->email?->value,
             'work_experiences' => count($this->work),
             'education_entries' => count($this->education),
             'skills' => count($this->skills),
@@ -113,136 +115,13 @@ final readonly class Resume implements JsonSerializable
     }
 
     /**
-     * Transform the résumé into a structured array for JSON-LD.
+     * Validate the résumé against the official JSON schema.
      *
-     * @return array<string, mixed>
+     * @return bool
+     * @throws ValidationException
      */
-    public function toJsonLd(): array
+    public function validate(): bool
     {
-        return [
-            '@context' => 'https://schema.org',
-            '@type' => 'Person',
-            'name' => $this->basics->name,
-            'url' => $this->basics->url,
-            'jobTitle' => $this->basics->label,
-            'sameAs' => array_filter(array_map(
-                static fn($profile): ?string => $profile->url,
-                $this->basics->profiles,
-            )),
-            'knowsAbout' => array_map(
-                static fn($skill): string => $skill->name,
-                $this->skills,
-            ),
-        ];
-    }
-
-    /**
-     * Convert the résumé to a Markdown string.
-     *
-     * @param array{
-     *     basics:bool,
-     *     contact:bool,
-     *     profiles:bool,
-     *     work:bool,
-     *     education:bool,
-     *     skills:bool,
-     *     languages:bool
-     * } $options
-     * @return string
-     */
-    public function toMarkdown(array $options = [
-        'basics' => true,
-        'contact' => true,
-        'profiles' => true,
-        'work' => true,
-        'education' => true,
-        'skills' => true,
-        'languages' => true,
-    ]): string
-    {
-        $options = array_replace_recursive([
-            'basics' => true,
-            'contact' => true,
-            'profiles' => true,
-            'work' => true,
-            'education' => true,
-            'skills' => true,
-            'languages' => true,
-        ], $options);
-
-        $md = [];
-
-        // Basics
-        if ($options['basics']) {
-            $md[] = "# {$this->basics->name}";
-            $md[] = "**{$this->basics->label}**";
-            if ( ! empty($this->basics->summary)) {
-                $md[] = $this->basics->summary;
-            }
-            $md[] = '';
-        }
-
-        // Contact Info
-        if ($options['contact']) {
-            $md[] = "📧 Email: [{$this->basics->email}](mailto:{$this->basics->email})";
-            $md[] = "🌍 Website: [{$this->basics->url}]({$this->basics->url})";
-            if ( ! empty($this->basics->location)) {
-                $location = "{$this->basics->location->city}, {$this->basics->location->countryCode}";
-                $md[] = "📍 Location: {$location}";
-            }
-        }
-
-        // Profiles
-        if ($options['profiles'] && ! empty($this->basics->profiles)) {
-            $md[] = "\n### 🔗 Social Profiles";
-            foreach ($this->basics->profiles as $profile) {
-                $md[] = "- [{$profile->network->value}]({$profile->url})";
-            }
-        }
-
-        // Work Experience
-        if ($options['work'] && ! empty($this->work)) {
-            $md[] = "\n## 💼 Work Experience";
-            foreach ($this->work as $job) {
-                $md[] = "### {$job->position} at {$job->name}";
-                $md[] = "_{$job->startDate} → {$job->endDate}_";
-                if ( ! empty($job->summary)) {
-                    $md[] = $job->summary;
-                }
-                foreach ($job->highlights as $highlight) {
-                    $md[] = "- {$highlight}";
-                }
-                $md[] = '';
-            }
-        }
-
-        // Education
-        if ($options['education'] && ! empty($this->education)) {
-            $md[] = "\n## 🎓 Education";
-            foreach ($this->education as $edu) {
-                $md[] = "### {$edu->institution}";
-                $md[] = "_{$edu->startDate} → {$edu->endDate}_";
-                $md[] = "{$edu->area} in {$edu->studyType?->value}";
-                $md[] = '';
-            }
-        }
-
-        // Skills
-        if ($options['skills'] && ! empty($this->skills)) {
-            $md[] = "\n## 🛠 Skills";
-            foreach ($this->skills as $skill) {
-                $md[] = "- **{$skill->name}**: " . implode(', ', $skill->keywords);
-            }
-        }
-
-        // Languages
-        if ($options['languages'] && ! empty($this->languages)) {
-            $md[] = "\n## 🌍 Languages";
-            foreach ($this->languages as $lang) {
-                $md[] = "- {$lang->language} ({$lang->fluency})";
-            }
-        }
-
-        return implode("\n", array_filter($md));
+        return (new Validator())->validate($this);
     }
 }

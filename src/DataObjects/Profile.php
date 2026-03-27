@@ -6,17 +6,15 @@ namespace JustSteveKing\Resume\DataObjects;
 
 use JsonSerializable;
 use JustSteveKing\Resume\Attributes\Field;
-use JustSteveKing\Resume\Concerns\ValidatesUrl;
 use JustSteveKing\Resume\Enums\Network;
+use JustSteveKing\Resume\ValueObjects\Url;
 
 final readonly class Profile implements JsonSerializable
 {
-    use ValidatesUrl;
-
     /**
      * @param Network $network
      * @param string $username
-     * @param string|null $url
+     * @param Url|null $url
      */
     public function __construct(
         #[Field('network')]
@@ -24,12 +22,8 @@ final readonly class Profile implements JsonSerializable
         #[Field('username')]
         public string $username,
         #[Field('url')]
-        public ?string $url = null,
-    ) {
-        if ($this->url) {
-            $this->assertUrl($this->url);
-        }
-    }
+        public ?Url $url = null,
+    ) {}
 
     /**
      * Convert the Profile instance to an array for JSON serialization.
@@ -37,15 +31,20 @@ final readonly class Profile implements JsonSerializable
      * @return array{
      *     network: string,
      *     username: string,
-     *     url?: string|null
+     *     url?: string
      * }
      */
     public function jsonSerialize(): array
     {
-        return [
+        $data = [
             'network' => $this->network->value,
             'username' => $this->username,
-            'url' => $this->url,
         ];
+
+        if (null !== $this->url) {
+            $data['url'] = $this->url->jsonSerialize();
+        }
+
+        return $data;
     }
 }
