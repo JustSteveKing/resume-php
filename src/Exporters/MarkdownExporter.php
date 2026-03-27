@@ -5,9 +5,12 @@ declare(strict_types=1);
 namespace JustSteveKing\Resume\Exporters;
 
 use JustSteveKing\Resume\DataObjects\Resume;
+use JustSteveKing\Resume\Services\Translator;
 
 final class MarkdownExporter implements Exporter
 {
+    private Translator $translator;
+
     /**
      * @param array{
      *     basics: bool,
@@ -18,6 +21,7 @@ final class MarkdownExporter implements Exporter
      *     skills: bool,
      *     languages: bool
      * } $options
+     * @param string $locale
      */
     public function __construct(
         private array $options = [
@@ -29,7 +33,11 @@ final class MarkdownExporter implements Exporter
             'skills' => true,
             'languages' => true,
         ],
-    ) {}
+        string $locale = 'en',
+    ) {
+        $this->translator = Translator::getInstance($locale);
+        $this->translator->setLocale($locale);
+    }
 
     /**
      * Export the résumé to Markdown format.
@@ -64,17 +72,28 @@ final class MarkdownExporter implements Exporter
 
         // Contact Info
         if ($options['contact']) {
-            $md[] = "📧 Email: [{$resume->basics->email?->value}](mailto:{$resume->basics->email?->value})";
-            $md[] = "🌍 Website: [{$resume->basics->url?->value}]({$resume->basics->url?->value})";
+            $emailLabel = $this->translator->trans('contact.email');
+            $websiteLabel = $this->translator->trans('contact.website');
+            $locationLabel = $this->translator->trans('contact.location');
+
+            if (null !== $resume->basics->email) {
+                $md[] = "📧 {$emailLabel}: [{$resume->basics->email->value}](mailto:{$resume->basics->email->value})";
+            }
+            
+            if (null !== $resume->basics->url) {
+                $md[] = "🌍 {$websiteLabel}: [{$resume->basics->url->value}]({$resume->basics->url->value})";
+            }
+
             if ( ! empty($resume->basics->location)) {
                 $location = "{$resume->basics->location->city}, {$resume->basics->location->countryCode}";
-                $md[] = "📍 Location: {$location}";
+                $md[] = "📍 {$locationLabel}: {$location}";
             }
         }
 
         // Profiles
         if ($options['profiles'] && ! empty($resume->basics->profiles)) {
-            $md[] = "\n### 🔗 Social Profiles";
+            $profilesLabel = $this->translator->trans('social.profiles');
+            $md[] = "\n### 🔗 {$profilesLabel}";
             foreach ($resume->basics->profiles as $profile) {
                 $md[] = "- [{$profile->network->value}]({$profile->url?->value})";
             }
@@ -82,10 +101,13 @@ final class MarkdownExporter implements Exporter
 
         // Work Experience
         if ($options['work'] && ! empty($resume->work)) {
-            $md[] = "\n## 💼 Work Experience";
+            $workLabel = $this->translator->trans('sections.work');
+            $presentLabel = $this->translator->trans('time.present');
+            
+            $md[] = "\n## 💼 {$workLabel}";
             foreach ($resume->work as $job) {
-                $startDate = $job->startDate?->format('Y-m') ?? 'Present';
-                $endDate = $job->endDate?->format('Y-m') ?? 'Present';
+                $startDate = $job->startDate?->format('Y-m') ?? $presentLabel;
+                $endDate = $job->endDate?->format('Y-m') ?? $presentLabel;
                 $md[] = "### {$job->position} at {$job->name}";
                 $md[] = "_{$startDate} → {$endDate}_";
                 if ( ! empty($job->summary)) {
@@ -100,10 +122,13 @@ final class MarkdownExporter implements Exporter
 
         // Education
         if ($options['education'] && ! empty($resume->education)) {
-            $md[] = "\n## 🎓 Education";
+            $eduLabel = $this->translator->trans('sections.education');
+            $presentLabel = $this->translator->trans('time.present');
+
+            $md[] = "\n## 🎓 {$eduLabel}";
             foreach ($resume->education as $edu) {
-                $startDate = $edu->startDate?->format('Y-m') ?? 'Present';
-                $endDate = $edu->endDate?->format('Y-m') ?? 'Present';
+                $startDate = $edu->startDate?->format('Y-m') ?? $presentLabel;
+                $endDate = $edu->endDate?->format('Y-m') ?? $presentLabel;
                 $md[] = "### {$edu->institution}";
                 $md[] = "_{$startDate} → {$endDate}_";
                 $md[] = "{$edu->area} in {$edu->studyType?->value}";
@@ -113,7 +138,8 @@ final class MarkdownExporter implements Exporter
 
         // Skills
         if ($options['skills'] && ! empty($resume->skills)) {
-            $md[] = "\n## 🛠 Skills";
+            $skillsLabel = $this->translator->trans('sections.skills');
+            $md[] = "\n## 🛠 {$skillsLabel}";
             foreach ($resume->skills as $skill) {
                 $md[] = "- **{$skill->name}**: " . implode(', ', $skill->keywords);
             }
@@ -121,7 +147,8 @@ final class MarkdownExporter implements Exporter
 
         // Languages
         if ($options['languages'] && ! empty($resume->languages)) {
-            $md[] = "\n## 🌍 Languages";
+            $langsLabel = $this->translator->trans('sections.languages');
+            $md[] = "\n## 🌍 {$langsLabel}";
             foreach ($resume->languages as $lang) {
                 $md[] = "- {$lang->language} ({$lang->fluency})";
             }
